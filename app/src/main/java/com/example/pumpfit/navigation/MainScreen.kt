@@ -121,16 +121,28 @@ fun MainScreen() {
                 )
             }
 
+//            composable("settings") {
+//                ConfigScreen(
+//                    onClearFavorites = {
+//                        favoriteExercises.clear()
+//                        coroutineScope.launch {
+//                            snackBarHostState.showSnackbar("Favoritos limpados com sucesso!")
+//                        }
+//                    },
+//                )
+//            }
             composable("settings") {
                 ConfigScreen(
+                    onBackClick = { navController.popBackStack() },
                     onClearFavorites = {
                         favoriteExercises.clear()
                         coroutineScope.launch {
                             snackBarHostState.showSnackbar("Favoritos limpados com sucesso!")
                         }
-                    },
+                    }
                 )
             }
+
         }
     }
 }
