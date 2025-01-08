@@ -43,5 +43,15 @@ val mockUsers = listOf(
         weight = 60.0,
         height = 1.65,
         period = "bulking"
-    )
+    ),
+    User(
+        id = "5",
+        image = R.drawable.ic_profile_placeholder,
+        name = "Veni",
+        email = "venifeitosa@ufc.alu.br",
+        password = "senha123",
+        weight = 80.0,
+        height = 1.80,
+        period = "bulking",
+    ),
 )

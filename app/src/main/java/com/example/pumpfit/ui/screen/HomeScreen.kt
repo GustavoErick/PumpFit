@@ -14,26 +14,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.pumpfit.model.mock.mockMuscleGroups
 import com.example.pumpfit.model.mock.mockUsers
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FitnessCenter
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.pumpfit.model.MuscleGroup
+import com.example.pumpfit.ui.Menu
 
 @Composable
-fun HomeScreen(onMuscleGroupSelected: (String) -> Unit) {
-    val user = mockUsers.find { it.id == "4" }
+fun HomeScreen(userId: String, navController: NavController, onMuscleGroupSelected: (String) -> Unit) {
+
+    val user = mockUsers.find { it.id == userId }
     val currentHour = java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY)
     val greetingMessage = when {
         currentHour in 5..11 -> "Bom dia,"
@@ -74,7 +71,7 @@ fun HomeScreen(onMuscleGroupSelected: (String) -> Unit) {
                     style = MaterialTheme.typography.h6
                 )
             }
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            /*Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     imageVector = Icons.Default.FitnessCenter,
                     contentDescription = "Treino",
@@ -83,11 +80,15 @@ fun HomeScreen(onMuscleGroupSelected: (String) -> Unit) {
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
-                    text = "05", // Substitua pelo número real de dias
+                    text = "5", // Substitua pelo número real de dias
                     color = Color.Red,
                     style = MaterialTheme.typography.h6
                 )
-            }
+
+            }*/
+
+            Menu(navController = navController)
+
         }
 
         // Barra de Pesquisa
@@ -158,16 +159,5 @@ fun MuscleGroupCard(muscleGroup: MuscleGroup, onClick: () -> Unit) {
                 .padding(horizontal = 8.dp, vertical = 4.dp)
         )
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewHomeScreen() {
-    HomeScreen(
-        onMuscleGroupSelected = { muscleGroupId ->
-            // Mock da navegação
-            println("Grupo muscular selecionado: $muscleGroupId")
-        }
-    )
 }
 

@@ -18,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.pumpfit.model.Exercise
 import com.example.pumpfit.ui.screen.ExerciseDetailsScreen
@@ -46,27 +47,14 @@ fun MainScreen() {
         ) {
             composable("home") {
                 HomeScreen(
+                    userId = "5", // ID de usuário no mock
+                    navController = navController,
                     onMuscleGroupSelected = { muscleGroupId ->
                         navController.navigate("exerciseList/$muscleGroupId")
                     }
                 )
             }
-//            composable("exerciseList/{muscleGroupId}") { backStackEntry ->
-//                val muscleGroupId = backStackEntry.arguments?.getString("muscleGroupId") ?: ""
-//                val muscleGroup = mockMuscleGroups.find { it.id == muscleGroupId }
-//
-//                // Lista de exercícios filtrados pelo grupo muscular
-//                val exercises = mockExercises.filter { it.muscleGroup == muscleGroup?.name }
-//
-//                ExerciseListScreen(
-//                    muscleGroup = muscleGroup?.name ?: "Desconhecido",
-//                    exercises = exercises,
-//                    onExerciseClick = { exerciseId ->
-//                        navController.navigate("exerciseDetails/$exerciseId") // Navega para detalhes
-//                    },
-//                    onBackClick = { navController.popBackStack() }
-//                )
-//            }
+
             composable("exerciseList/{muscleGroupId}") { backStackEntry ->
                 val muscleGroupId = backStackEntry.arguments?.getString("muscleGroupId") ?: ""
                 val muscleGroup = mockMuscleGroups.find { it.id == muscleGroupId }
@@ -120,7 +108,7 @@ fun MainScreen() {
 
             composable("profile") {
                 ProfileScreen(
-                    userId = "4", // ID de usuário no mock
+                    userId = "5", // ID de usuário no mock
                     onBackClick = {
                         navController.popBackStack()
                     }
@@ -133,17 +121,24 @@ fun MainScreen() {
 
 @Composable
 fun BottomNavigationBar(navController: NavController) {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
     BottomNavigation(
         backgroundColor = Color(0xFF090909),
         contentColor = Color(0xFFCFCFCF)
     ) {
-        val currentRoute = navController.currentBackStackEntry?.destination?.route
-
         BottomNavigationItem(
             icon = { Icon(Icons.Default.Home, contentDescription = "Home") },
             label = { Text("Home") },
             selected = currentRoute == "home",
-            onClick = { navController.navigate("home") },
+            onClick = {
+                navController.navigate("home") {
+                    popUpTo(navController.graph.startDestinationId) { saveState = true }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            },
             selectedContentColor = Color.Red,
             unselectedContentColor = Color(0xFFCFCFCF)
         )
@@ -152,7 +147,13 @@ fun BottomNavigationBar(navController: NavController) {
             icon = { Icon(Icons.Default.Favorite, contentDescription = "Favorites") },
             label = { Text("Favoritos") },
             selected = currentRoute == "favorites",
-            onClick = { navController.navigate("favorites") },
+            onClick = {
+                navController.navigate("favorites") {
+                    popUpTo(navController.graph.startDestinationId) { saveState = true }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            },
             selectedContentColor = Color.Red,
             unselectedContentColor = Color(0xFFCFCFCF)
         )
@@ -161,12 +162,19 @@ fun BottomNavigationBar(navController: NavController) {
             icon = { Icon(Icons.Default.Person, contentDescription = "Profile") },
             label = { Text("Perfil") },
             selected = currentRoute == "profile",
-            onClick = { navController.navigate("profile") },
+            onClick = {
+                navController.navigate("profile") {
+                    popUpTo(navController.graph.startDestinationId) { saveState = true }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            },
             selectedContentColor = Color.Red,
             unselectedContentColor = Color(0xFFCFCFCF)
         )
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
