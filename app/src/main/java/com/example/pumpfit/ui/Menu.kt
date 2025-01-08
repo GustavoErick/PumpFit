@@ -34,31 +34,51 @@ fun Menu(navController: NavController) {
             // Itens do menu
             DropdownMenuItem(onClick = {
                 expanded = false
-                navController.navigate("home")
+                navController.navigate("home", {
+                    popUpTo(navController.graph.startDestinationId) { saveState = true }
+                    launchSingleTop = true
+                    restoreState = true
+                })
             }) {
                 Text("Tela Inicial")
             }
             DropdownMenuItem(onClick = {
                 expanded = false
-                navController.navigate("favorites")
+                navController.navigate("favorites"){
+                    popUpTo(navController.graph.startDestinationId) { saveState = true }
+                    launchSingleTop = true
+                    restoreState = true
+                }
             }) {
                 Text("Favoritos")
             }
             DropdownMenuItem(onClick = {
                 expanded = false
-                navController.navigate("home")
+                navController.navigate("settings"){
+                    popUpTo(navController.graph.startDestinationId) { saveState = true }
+                    launchSingleTop = true
+                    restoreState = true
+                }
             }) {
                 Text("Configurações")
             }
             DropdownMenuItem(onClick = {
                 expanded = false
-                navController.navigate("home")
+                navController.navigate("home"){
+                    popUpTo(navController.graph.startDestinationId) { saveState = true }
+                    launchSingleTop = true
+                    restoreState = true
+                }
             }) {
                 Text("Ajuda")
             }
             DropdownMenuItem(onClick = {
                 expanded = false
-                navController.navigate("home")
+                navController.navigate("home"){
+                    popUpTo(navController.graph.startDestinationId) { saveState = true }
+                    launchSingleTop = true
+                    restoreState = true
+                }
             }) {
                 Text("Logout")
             }

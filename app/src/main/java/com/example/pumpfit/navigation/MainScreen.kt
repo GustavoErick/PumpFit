@@ -5,11 +5,13 @@ import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -26,19 +28,23 @@ import com.example.pumpfit.ui.screen.ExerciseListScreen
 import com.example.pumpfit.ui.screen.HomeScreen
 import com.example.pumpfit.model.mock.mockExercises
 import com.example.pumpfit.model.mock.mockMuscleGroups
+import com.example.pumpfit.ui.screen.ConfigScreen
 import com.example.pumpfit.ui.screen.FavoritesScreen
 import com.example.pumpfit.ui.screen.ProfileScreen
+import kotlinx.coroutines.launch
 
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
-
+    val snackBarHostState = remember { SnackbarHostState() }
     val favoriteExercises = remember { mutableStateListOf<Exercise>() }
 
+    val coroutineScope = rememberCoroutineScope()
     Scaffold(
         bottomBar = {
             BottomNavigationBar(navController = navController) // Bottom Bar gerenciada aqui
-        }
+        },
+        snackbarHost = { SnackbarHost(hostState = snackBarHostState) }
     ) { innerPadding ->
         NavHost(
             navController = navController,
@@ -115,6 +121,16 @@ fun MainScreen() {
                 )
             }
 
+            composable("settings") {
+                ConfigScreen(
+                    onClearFavorites = {
+                        favoriteExercises.clear()
+                        coroutineScope.launch {
+                            snackBarHostState.showSnackbar("Favoritos limpados com sucesso!")
+                        }
+                    },
+                )
+            }
         }
     }
 }
