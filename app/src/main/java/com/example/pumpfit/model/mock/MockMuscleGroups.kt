@@ -7,7 +7,7 @@ val mockMuscleGroups = listOf(
     MuscleGroup(
         id = "1",
         name = "Braço",
-        imageRes = R.drawable.placeholder_image // Substitua pelo recurso real
+        imageRes = R.drawable.placeholder_image
     ),
     MuscleGroup(
         id = "2",
