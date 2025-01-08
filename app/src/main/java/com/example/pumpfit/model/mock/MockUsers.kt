@@ -1,10 +1,12 @@
 package com.example.pumpfit.model.mock
 
+import com.example.pumpfit.R
 import com.example.pumpfit.model.User
 
 val mockUsers = listOf(
     User(
         id = "1",
+        image = R.drawable.ic_profile_placeholder,
         name = "João",
         email = "joao@example.com",
         password = "123456",
@@ -14,6 +16,7 @@ val mockUsers = listOf(
     ),
     User(
         id = "2",
+        image = R.drawable.ic_profile_placeholder,
         name = "Maria",
         email = "maria@example.com",
         password = "abcdef",
@@ -23,6 +26,7 @@ val mockUsers = listOf(
     ),
     User(
         id = "3",
+        image = R.drawable.ic_profile_placeholder,
         name = "Carlos",
         email = "carlos@example.com",
         password = "senha123",
@@ -32,6 +36,7 @@ val mockUsers = listOf(
     ),
     User(
         id = "4",
+        image = R.drawable.ic_profile_placeholder,
         name = "Gustavo Erick",
         email = "gustaerick@example.com",
         password = "senha123",

@@ -1,4 +1,4 @@
-package com.example.pumpfit.ui
+package com.example.pumpfit.navigation
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
@@ -25,11 +25,14 @@ import com.example.pumpfit.ui.screen.ExerciseListScreen
 import com.example.pumpfit.ui.screen.HomeScreen
 import com.example.pumpfit.model.mock.mockExercises
 import com.example.pumpfit.model.mock.mockMuscleGroups
-//import com.example.pumpfit.ui.screen.FavoritesScreen
+import com.example.pumpfit.ui.screen.FavoritesScreen
+import com.example.pumpfit.ui.screen.ProfileScreen
 
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
+
+    val favoriteExercises = remember { mutableStateListOf<Exercise>() }
 
     Scaffold(
         bottomBar = {
@@ -48,6 +51,22 @@ fun MainScreen() {
                     }
                 )
             }
+//            composable("exerciseList/{muscleGroupId}") { backStackEntry ->
+//                val muscleGroupId = backStackEntry.arguments?.getString("muscleGroupId") ?: ""
+//                val muscleGroup = mockMuscleGroups.find { it.id == muscleGroupId }
+//
+//                // Lista de exercícios filtrados pelo grupo muscular
+//                val exercises = mockExercises.filter { it.muscleGroup == muscleGroup?.name }
+//
+//                ExerciseListScreen(
+//                    muscleGroup = muscleGroup?.name ?: "Desconhecido",
+//                    exercises = exercises,
+//                    onExerciseClick = { exerciseId ->
+//                        navController.navigate("exerciseDetails/$exerciseId") // Navega para detalhes
+//                    },
+//                    onBackClick = { navController.popBackStack() }
+//                )
+//            }
             composable("exerciseList/{muscleGroupId}") { backStackEntry ->
                 val muscleGroupId = backStackEntry.arguments?.getString("muscleGroupId") ?: ""
                 val muscleGroup = mockMuscleGroups.find { it.id == muscleGroupId }
@@ -58,12 +77,21 @@ fun MainScreen() {
                 ExerciseListScreen(
                     muscleGroup = muscleGroup?.name ?: "Desconhecido",
                     exercises = exercises,
+                    favoriteExercises = favoriteExercises, // Passa a lista de favoritos
                     onExerciseClick = { exerciseId ->
-                        navController.navigate("exerciseDetails/$exerciseId") // Navega para detalhes
+                        navController.navigate("exerciseDetails/$exerciseId") // Navega para a tela de detalhes do exercício
                     },
-                    onBackClick = { navController.popBackStack() }
+                    onFavoriteClick = { exercise ->
+                        if (favoriteExercises.contains(exercise)) {
+                            favoriteExercises.remove(exercise) // Remove dos favoritos
+                        } else {
+                            favoriteExercises.add(exercise) // Adiciona aos favoritos
+                        }
+                    },
+                    onBackClick = { navController.popBackStack() } // Volta para a tela anterior
                 )
             }
+
 
             composable("exerciseDetails/{exerciseId}") { backStackEntry ->
                 val exerciseId = backStackEntry.arguments?.getString("exerciseId") ?: ""
@@ -76,193 +104,32 @@ fun MainScreen() {
                     )
                 }
             }
+
+            composable("favorites") {
+                FavoritesScreen(
+                    favoriteExercises = favoriteExercises,
+                    onExerciseClick = { exerciseId ->
+                        navController.navigate("exerciseDetails/$exerciseId")
+                    },
+                    onFavoriteClick = { exercise ->
+                        favoriteExercises.remove(exercise)
+                    },
+                    onBackClick = { navController.popBackStack() }
+                )
+            }
+
+            composable("profile") {
+                ProfileScreen(
+                    userId = "4", // ID de usuário no mock
+                    onBackClick = {
+                        navController.popBackStack()
+                    }
+                )
+            }
+
         }
     }
 }
-//@Composable
-//fun MainScreen() {
-//    val navController = rememberNavController()
-//    val favoriteExercises = remember { mutableStateListOf<Exercise>() } // Lista de favoritos
-//
-//    Scaffold(
-//        bottomBar = {
-//            BottomNavigationBar(navController = navController)
-//        }
-//    ) { innerPadding ->
-//        NavHost(
-//            navController = navController,
-//            startDestination = "home",
-//            modifier = Modifier.padding(innerPadding)
-//        ) {
-//            // Tela Home
-//            composable("home") {
-//                HomeScreen(
-//                    onMuscleGroupSelected = { muscleGroupId ->
-//                        navController.navigate("exerciseList/$muscleGroupId")
-//                    }
-//                )
-//            }
-//
-//            // Tela Lista de Exercícios
-//            composable("exerciseList/{muscleGroupId}") { backStackEntry ->
-//                val muscleGroupId = backStackEntry.arguments?.getString("muscleGroupId") ?: ""
-//                val exercises = mockExercises.filter { it.muscleGroup.equals(muscleGroupId, ignoreCase = true) }
-//
-//                ExerciseListScreen(
-//                    muscleGroup = muscleGroupId,
-//                    exercises = exercises,
-//                    favoriteExercises = favoriteExercises,
-//                    onExerciseClick = { exerciseId ->
-//                        navController.navigate("exerciseDetails/$exerciseId")
-//                    },
-//                    onFavoriteClick = { exercise ->
-//                        if (favoriteExercises.contains(exercise)) {
-//                            favoriteExercises.remove(exercise)
-//                        } else {
-//                            favoriteExercises.add(exercise)
-//                        }
-//                    }
-//                )
-//            }
-//
-//            // Tela Detalhes do Exercício
-//            composable("exerciseDetails/{exerciseId}") { backStackEntry ->
-//                val exerciseId = backStackEntry.arguments?.getString("exerciseId") ?: ""
-//                val exercise = mockExercises.find { it.id == exerciseId }
-//
-//                exercise?.let {
-//                    ExerciseDetailsScreen(
-//                        exercise = it,
-//                        onBackClick = { navController.popBackStack() }
-//                    )
-//                }
-//            }
-//
-//            // Tela Favoritos
-//            composable("favorites") {
-//                FavoritesScreen(
-//                    favoriteExercises = favoriteExercises,
-//                    onExerciseClick = { exerciseId ->
-//                        navController.navigate("exerciseDetails/$exerciseId")
-//                    },
-//                    onFavoriteClick = { exercise ->
-//                        favoriteExercises.remove(exercise)
-//                    }
-//                )
-//            }
-//        }
-//    }
-//}
-
-
-
-//            composable("exerciseList/{muscleGroupId}") { backStackEntry ->
-//                val muscleGroupId = backStackEntry.arguments?.getString("muscleGroupId") ?: ""
-//                val muscleGroup = mockMuscleGroups.find { it.id == muscleGroupId }
-//
-//                // Lista de exercícios filtrados pelo grupo muscular
-//                val exercises = mockExercises.filter { it.muscleGroup == muscleGroup?.name }
-//
-//                ExerciseListScreen(
-//                    muscleGroup = muscleGroup?.name ?: "Desconhecido",
-//                    exercises = exercises,
-//                    onExerciseClick = { exerciseId ->
-//                        navController.navigate("exerciseDetails/$exerciseId")
-//                    },
-//                    onBackClick = { navController.popBackStack() }
-//                )
-//            }
-//
-//            composable("exerciseDetails/{exerciseId}") { backStackEntry ->
-//                val exerciseId = backStackEntry.arguments?.getString("exerciseId") ?: ""
-//                val exercise = mockExercises.find { it.id == exerciseId }
-//                exercise?.let {
-//                    ExerciseDetailsScreen(
-//                        exercise = it,
-//                        onBackClick = { navController.popBackStack() }
-//                    )
-//                }
-//            }
-//        }
-//    }
-//}
-
-//@Composable
-//fun MainScreen() {
-//    val navController = rememberNavController()
-//    val favoriteExercises = remember { mutableStateListOf<Exercise>() } // Lista de favoritos
-//
-//    Scaffold(
-//        bottomBar = {
-//            BottomNavigationBar(navController = navController)
-//        }
-//    ) { innerPadding ->
-//        NavHost(
-//            navController = navController,
-//            startDestination = "home",
-//            modifier = Modifier.padding(innerPadding)
-//        ) {
-//            // Tela Home
-//            composable("home") {
-//                HomeScreen(
-//                    onMuscleGroupSelected = { muscleGroupId ->
-//                        navController.navigate("exerciseList/$muscleGroupId")
-//                    }
-//                )
-//            }
-//
-//            // Tela de Lista de Exercícios
-//            composable("exerciseList/{muscleGroupId}") { backStackEntry ->
-//                val muscleGroupId = backStackEntry.arguments?.getString("muscleGroupId") ?: ""
-//                val exercises = mockExercises.filter { it.muscleGroup.equals(muscleGroupId, ignoreCase = true) }
-//
-//                ExerciseListScreen(
-//                    muscleGroup = muscleGroupId,
-//                    exercises = exercises,
-//                    favoriteExercises = favoriteExercises,
-//                    onExerciseClick = { exerciseId ->
-//                        navController.navigate("exerciseDetails/$exerciseId")
-//                    },
-//                    onFavoriteClick = { exercise ->
-//                        if (favoriteExercises.contains(exercise)) {
-//                            favoriteExercises.remove(exercise)
-//                        } else {
-//                            favoriteExercises.add(exercise)
-//                        }
-//                    }
-//                )
-//            }
-//
-//            // Tela de Detalhes do Exercício
-//            composable("exerciseDetails/{exerciseId}") { backStackEntry ->
-//                val exerciseId = backStackEntry.arguments?.getString("exerciseId") ?: ""
-//                val exercise = mockExercises.find { it.id == exerciseId }
-//
-//                exercise?.let {
-//                    ExerciseDetailsScreen(
-//                        exercise = it,
-//                        onBackClick = { navController.popBackStack() }
-//                    )
-//                }
-//            }
-//
-//            // Tela de Favoritos
-//            composable("favorites") {
-//                FavoritesScreen(
-//                    favoriteExercises = favoriteExercises,
-//                    onExerciseClick = { exerciseId ->
-//                        navController.navigate("exerciseDetails/$exerciseId")
-//                    },
-//                    onFavoriteClick = { exercise ->
-//                        favoriteExercises.remove(exercise)
-//                    }
-//                )
-//            }
-//        }
-//    }
-//}
-
-
 
 @Composable
 fun BottomNavigationBar(navController: NavController) {
@@ -277,8 +144,8 @@ fun BottomNavigationBar(navController: NavController) {
             label = { Text("Home") },
             selected = currentRoute == "home",
             onClick = { navController.navigate("home") },
-            selectedContentColor = Color.Red, // Cor do item selecionado
-            unselectedContentColor = Color(0xFFCFCFCF) // Cor dos itens não selecionados
+            selectedContentColor = Color.Red,
+            unselectedContentColor = Color(0xFFCFCFCF)
         )
 
         BottomNavigationItem(
@@ -286,8 +153,8 @@ fun BottomNavigationBar(navController: NavController) {
             label = { Text("Favoritos") },
             selected = currentRoute == "favorites",
             onClick = { navController.navigate("favorites") },
-            selectedContentColor = Color.Red, // Cor do item selecionado
-            unselectedContentColor = Color(0xFFCFCFCF) // Cor dos itens não selecionados
+            selectedContentColor = Color.Red,
+            unselectedContentColor = Color(0xFFCFCFCF)
         )
 
         BottomNavigationItem(
@@ -300,32 +167,6 @@ fun BottomNavigationBar(navController: NavController) {
         )
     }
 }
-
-//@Composable
-//fun BottomNavigationBar(navController: NavController) {
-//    val currentRoute = navController.currentBackStackEntry?.destination?.route
-//
-//    BottomNavigation(
-//        backgroundColor = Color(0xFF090909),
-//        contentColor = Color(0xFFCFCFCF)
-//    ) {
-//        BottomNavigationItem(
-//            icon = { Icon(Icons.Default.Home, contentDescription = "Home") },
-//            label = { Text("Home") },
-//            selected = currentRoute == "home",
-//            onClick = { navController.navigate("home") }
-//        )
-//
-//        BottomNavigationItem(
-//            icon = { Icon(Icons.Default.Favorite, contentDescription = "Favorites") },
-//            label = { Text("Favoritos") },
-//            selected = currentRoute == "favorites",
-//            onClick = { navController.navigate("favorites") }
-//        )
-//    }
-//}
-
-
 
 @Preview(showBackground = true)
 @Composable
