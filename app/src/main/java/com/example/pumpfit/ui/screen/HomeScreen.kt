@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.pumpfit.model.MuscleGroup
 import com.example.pumpfit.ui.Menu
+import androidx.compose.material3.MaterialTheme
 
 @Composable
 fun HomeScreen(userId: String, navController: NavController, onMuscleGroupSelected: (String) -> Unit) {
@@ -48,7 +49,7 @@ fun HomeScreen(userId: String, navController: NavController, onMuscleGroupSelect
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF141414)) // Cor de fundo da tela
+            .background( MaterialTheme.colorScheme.background) // Cor de fundo da tela
             .padding(16.dp)
     ) {
         // Top Bar
@@ -63,12 +64,12 @@ fun HomeScreen(userId: String, navController: NavController, onMuscleGroupSelect
                 Text(
                     text = greetingMessage,
                     color = Color(0xFFCFCFCF), // Cor do texto
-                    style = MaterialTheme.typography.subtitle1
+                    style = MaterialTheme.typography.titleSmall
                 )
                 Text(
                     text = user?.name ?: "Usuário não encontrado",
                     color = Color(0xFFCFCFCF), // Cor do texto
-                    style = MaterialTheme.typography.h6
+                    style = MaterialTheme.typography.headlineMedium
                 )
             }
             /*Row(verticalAlignment = Alignment.CenterVertically) {
