@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,18 +31,18 @@ fun HelpScreen(onBackClick: () -> Unit) {
                 title = {
                     Text(
                         text = "Ajuda",
-                        color = Color(0xFFCFCFCF),
+                        color = MaterialTheme.colorScheme.tertiary,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
                     )
                 },
-                backgroundColor = Color(0xFF090909),
+                backgroundColor = MaterialTheme.colorScheme.onBackground,
                 navigationIcon = {
                     IconButton(onClick = { onBackClick() }) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_back),
                             contentDescription = "Voltar",
-                            tint = Color(0xFFCFCFCF)
+                            tint = MaterialTheme.colorScheme.tertiary
                         )
                     }
                 }
@@ -51,14 +52,14 @@ fun HelpScreen(onBackClick: () -> Unit) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFF141414))
+                .background(MaterialTheme.colorScheme.background)
                 .padding(innerPadding)
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text(
                 text = "Perguntas Frequentes",
-                color = Color(0xFFCFCFCF),
+                color = MaterialTheme.colorScheme.tertiary,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
