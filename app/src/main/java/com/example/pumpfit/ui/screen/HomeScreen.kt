@@ -25,7 +25,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.pumpfit.model.MuscleGroup
-import com.example.pumpfit.ui.Menu
+import com.example.pumpfit.components.Menu
 import androidx.compose.material3.MaterialTheme
 
 @Composable

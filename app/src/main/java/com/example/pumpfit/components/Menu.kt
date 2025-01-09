@@ -1,4 +1,4 @@
-package com.example.pumpfit.ui
+package com.example.pumpfit.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material.DropdownMenu
