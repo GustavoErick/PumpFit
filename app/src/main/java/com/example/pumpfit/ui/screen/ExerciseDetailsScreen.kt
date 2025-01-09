@@ -186,7 +186,7 @@ import com.example.pumpfit.model.mock.mockExercises
 @Composable
 fun ExerciseDetailsScreen(exercise: Exercise, onBackClick: () -> Unit) {
     var isPlaying by remember { mutableStateOf(false) } // Controla se o vídeo está sendo reproduzido
-    val context = LocalContext.current
+    //val context = LocalContext.current
 
     Scaffold(
         topBar = {
