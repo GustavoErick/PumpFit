@@ -30,6 +30,7 @@ import com.example.pumpfit.model.mock.mockExercises
 import com.example.pumpfit.model.mock.mockMuscleGroups
 import com.example.pumpfit.ui.screen.ConfigScreen
 import com.example.pumpfit.ui.screen.FavoritesScreen
+import com.example.pumpfit.ui.screen.HelpScreen
 import com.example.pumpfit.ui.screen.ProfileScreen
 import kotlinx.coroutines.launch
 
@@ -141,6 +142,10 @@ fun MainScreen() {
                         }
                     }
                 )
+            }
+
+            composable("help") {
+                HelpScreen(onBackClick = { navController.popBackStack() })
             }
 
         }
