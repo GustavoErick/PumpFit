@@ -49,7 +49,7 @@ val mockExercises = listOf(
         methodology = "Tensional/Corda",
         interval = "01:55",
         image = R.drawable.rosca_direta_image,
-        video = R.raw.placeholder_video,
+        video = R.raw.rosca_direta_video,
         machines = listOf("Barra Reta", "Halteres", "Máquina de Rosca")
     ),
     Exercise(
@@ -62,7 +62,7 @@ val mockExercises = listOf(
         methodology = "Controle Total",
         interval = "01:30",
         image = R.drawable.triceps_testa_image,
-        video = R.raw.placeholder_video,
+        video = R.raw.triceps_testa_video,
         machines = listOf("Barra EZ", "Máquina de Tríceps", "Halteres")
     ),
     Exercise(
@@ -75,7 +75,7 @@ val mockExercises = listOf(
         methodology = "Foco Isolado",
         interval = "01:20",
         image = R.drawable.rosca_concentrada_image,
-        video = R.raw.placeholder_video,
+        video = R.raw.rosca_direta_video,
         machines = listOf("Halteres", "Banco Ajustável")
     ),
 
@@ -90,7 +90,7 @@ val mockExercises = listOf(
         methodology = "Progressivo",
         interval = "02:00",
         image = R.drawable.supino_reto_image,
-        video = R.raw.placeholder_video,
+        video = R.raw.supino_reto_video,
         machines = listOf("Banco Reto", "Halteres", "Barra Olímpica")
     ),
     Exercise(
@@ -103,7 +103,7 @@ val mockExercises = listOf(
         methodology = "Amplitude Máxima",
         interval = "01:45",
         image = R.drawable.crucifixo_inclinado_image,
-        video = R.raw.placeholder_video,
+        video = R.raw.supino_reto_video,
         machines = listOf("Banco Inclinado", "Halteres")
     ),
     Exercise(
@@ -116,7 +116,7 @@ val mockExercises = listOf(
         methodology = "Resistência Contínua",
         interval = "01:40",
         image = R.drawable.crossover_image,
-        video = R.raw.placeholder_video,
+        video = R.raw.supino_reto_video,
         machines = listOf("Crossover", "Polia")
     ),
 
@@ -131,7 +131,7 @@ val mockExercises = listOf(
         methodology = "Controle Total",
         interval = "01:30",
         image = R.drawable.elevacao_lateral_image,
-        video = R.raw.placeholder_video,
+        video = R.raw.elevacao_lateral_video,
         machines = listOf("Halteres", "Máquina de Elevação Lateral")
     ),
     Exercise(
@@ -143,8 +143,8 @@ val mockExercises = listOf(
         sets = "3x10",
         methodology = "Foco no Movimento",
         interval = "01:40",
-        image = R.drawable.elevacao_lateral_image,
-        video = R.raw.placeholder_video,
+        image = R.drawable.desenvolvimento_com_halteres_image,
+        video = R.raw.desenvolvimento_com_halteres_video,
         machines = listOf("Halteres", "Banco Ajustável")
     ),
     Exercise(
@@ -157,7 +157,7 @@ val mockExercises = listOf(
         methodology = "Amplitude Controlada",
         interval = "01:35",
         image = R.drawable.elevacao_frontal_image,
-        video = R.raw.placeholder_video,
+        video = R.raw.elevacao_frontal_video,
         machines = listOf("Halteres", "Polia Baixa")
     ),
 
@@ -172,7 +172,7 @@ val mockExercises = listOf(
         methodology = "Movimento Completo",
         interval = "02:00",
         image = R.drawable.agachamento_livre_image,
-        video = R.raw.placeholder_video,
+        video = R.raw.leg_press_video,
         machines = listOf("Barra Olímpica", "Plataforma")
     ),
     Exercise(
@@ -185,7 +185,7 @@ val mockExercises = listOf(
         methodology = "Controle de Carga",
         interval = "01:45",
         image = R.drawable.leg_press_image,
-        video = R.raw.placeholder_video,
+        video = R.raw.leg_press_video,
         machines = listOf("Máquina Leg Press")
     ),
     Exercise(
@@ -198,7 +198,7 @@ val mockExercises = listOf(
         methodology = "Isolamento Muscular",
         interval = "01:30",
         image = R.drawable.cadeira_extensora_image,
-        video = R.raw.placeholder_video,
+        video = R.raw.leg_press_video,
         machines = listOf("Cadeira Extensora")
     ),
 
@@ -213,7 +213,7 @@ val mockExercises = listOf(
         methodology = "Foco no Movimento",
         interval = "01:40",
         image = R.drawable.remada_curvada_image,
-        video = R.raw.placeholder_video,
+        video = R.raw.remada_curvada_video,
         machines = listOf("Barra Olímpica", "Halteres")
     ),
     Exercise(
@@ -226,7 +226,7 @@ val mockExercises = listOf(
         methodology = "Controle Contínuo",
         interval = "01:30",
         image = R.drawable.pulldown_image,
-        video = R.raw.placeholder_video,
+        video = R.raw.remada_curvada_video,
         machines = listOf("Máquina de Pull Down")
     ),
     Exercise(
@@ -239,7 +239,7 @@ val mockExercises = listOf(
         methodology = "Explosão Controlada",
         interval = "02:00",
         image = R.drawable.deadlift_image,
-        video = R.raw.placeholder_video,
+        video = R.raw.remada_curvada_video,
         machines = listOf("Barra Olímpica")
     ),
 
@@ -254,7 +254,7 @@ val mockExercises = listOf(
         methodology = "Movimento Completo",
         interval = "01:00",
         image = R.drawable.abdominal_reto_image,
-        video = R.raw.placeholder_video,
+        video = R.raw.elevacao_frontal_video,
         machines = listOf("Colchonete")
     ),
     Exercise(
@@ -267,7 +267,7 @@ val mockExercises = listOf(
         methodology = "Isometria",
         interval = "01:30",
         image = R.drawable.prancha_image,
-        video = R.raw.placeholder_video,
+        video = R.raw.elevacao_frontal_video,
         machines = listOf("Colchonete")
     ),
     Exercise(
@@ -280,7 +280,7 @@ val mockExercises = listOf(
         methodology = "Rotação Controlada",
         interval = "01:20",
         image = R.drawable.abdominal_obliquo_image,
-        video = R.raw.placeholder_video,
+        video = R.raw.elevacao_lateral_video,
         machines = listOf("Colchonete", "Med Ball")
     )
 )
