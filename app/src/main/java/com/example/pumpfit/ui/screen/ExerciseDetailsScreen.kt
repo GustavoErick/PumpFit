@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,15 +26,15 @@ fun ExerciseDetailsScreen(exercise: Exercise, onBackClick: () -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = exercise.name, color = Color(0xFFCFCFCF)) },
-                backgroundColor = Color(0xFF090909),
-                contentColor = Color(0xFFCFCFCF),
+                title = { Text(text = exercise.name, color = MaterialTheme.colorScheme.tertiary) },
+                backgroundColor = MaterialTheme.colorScheme.onBackground,
+                contentColor = MaterialTheme.colorScheme.tertiary,
                 navigationIcon = {
                     IconButton(onClick = { onBackClick() }) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_back),
                             contentDescription = "Voltar",
-                            tint = Color(0xFFCFCFCF)
+                            tint = MaterialTheme.colorScheme.tertiary
                         )
                     }
                 }
@@ -43,7 +44,7 @@ fun ExerciseDetailsScreen(exercise: Exercise, onBackClick: () -> Unit) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFF141414))
+                .background(MaterialTheme.colorScheme.background)
                 .padding(innerPadding)
                 .padding(16.dp)
         ) {
@@ -86,13 +87,13 @@ fun ExerciseDetailsScreen(exercise: Exercise, onBackClick: () -> Unit) {
                     text = exercise.name,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFFCFCFCF)
+                    color = MaterialTheme.colorScheme.tertiary
                 )
                 Spacer(modifier = Modifier.height(4.dp)) // Espaçamento entre os textos
                 Text(
                     text = exercise.muscleGroup,
                     fontSize = 14.sp,
-                    color = Color(0xFFCFCFCF)
+                    color = MaterialTheme.colorScheme.tertiary
                 )
             }
 
@@ -131,8 +132,8 @@ fun DetailsRow(label: String, value: String) {
             .padding(vertical = 8.dp), // Espaçamento vertical para cada atributo
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(text = label, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color(0xFFCFCFCF))
-        Text(text = value, fontSize = 14.sp, color = Color(0xFFCFCFCF))
+        Text(text = label, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.tertiary)
+        Text(text = value, fontSize = 14.sp, color = MaterialTheme.colorScheme.tertiary)
     }
 }
 

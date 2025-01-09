@@ -12,6 +12,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.TopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,64 +25,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.pumpfit.model.Exercise
 import com.example.pumpfit.R
-
-//@Composable
-//fun FavoritesScreen(
-//    favoriteExercises: List<Exercise>,
-//    onExerciseClick: (String) -> Unit,
-//    onFavoriteClick: (Exercise) -> Unit
-//) {
-//    Scaffold(
-//        topBar = {
-//            TopAppBar(
-//                title = {
-//                    Text(
-//                        text = "Favoritos",
-//                        color = Color(0xFFCFCFCF),
-//                        fontSize = 20.sp,
-//                        fontWeight = FontWeight.Bold
-//                    )
-//                },
-//                backgroundColor = Color(0xFF090909),
-//                contentColor = Color(0xFFCFCFCF)
-//            )
-//        }
-//    ) { innerPadding ->
-//        Column(
-//            modifier = Modifier
-//                .fillMaxSize()
-//                .background(Color(0xFF141414))
-//                .padding(innerPadding)
-//                .padding(16.dp)
-//        ) {
-//            if (favoriteExercises.isEmpty()) {
-//                Box(
-//                    modifier = Modifier.fillMaxSize(),
-//                    contentAlignment = Alignment.Center
-//                ) {
-//                    Text(
-//                        text = "Nenhum exercício favorito",
-//                        color = Color(0xFFCFCFCF),
-//                        fontSize = 16.sp
-//                    )
-//                }
-//            } else {
-//                LazyColumn(
-//                    verticalArrangement = Arrangement.spacedBy(16.dp)
-//                ) {
-//                    items(favoriteExercises) { exercise ->
-//                        ExerciseCard(
-//                            exercise = exercise,
-//                            isFavorite = true,
-//                            onFavoriteClick = onFavoriteClick,
-//                            onClick = { onExerciseClick(exercise.id) }
-//                        )
-//                    }
-//                }
-//            }
-//        }
-//    }
-//}
 
 @Composable
 fun FavoritesScreen(
@@ -96,18 +39,18 @@ fun FavoritesScreen(
                 title = {
                     Text(
                         text = "Favoritos",
-                        color = Color(0xFFCFCFCF),
+                        color = MaterialTheme.colorScheme.tertiary,
                         fontSize = 20.sp // Tamanho ajustado para maior consistência com o restante do app
                     )
                 },
-                backgroundColor = Color(0xFF090909),
-                contentColor = Color(0xFFCFCFCF),
+                backgroundColor = MaterialTheme.colorScheme.onBackground,
+                contentColor = MaterialTheme.colorScheme.tertiary,
                 navigationIcon = { // Ícone de voltar
                     IconButton(onClick = { onBackClick() }) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_back), // Use o recurso correto
                             contentDescription = "Voltar",
-                            tint = Color(0xFFCFCFCF)
+                            tint = MaterialTheme.colorScheme.tertiary
                         )
                     }
                 }
@@ -117,7 +60,7 @@ fun FavoritesScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFF141414))
+                .background(MaterialTheme.colorScheme.background)
                 .padding(innerPadding)
                 .padding(16.dp)
         ) {
@@ -128,7 +71,7 @@ fun FavoritesScreen(
                 ) {
                     Text(
                         text = "Nenhum exercício favoritado.",
-                        color = Color(0xFFCFCFCF),
+                        color = MaterialTheme.colorScheme.tertiary,
                         fontSize = 16.sp
                     )
                 }

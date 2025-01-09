@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,15 +29,15 @@ fun ProfileScreen(userId: String, onBackClick: () -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "Perfil", color = Color(0xFFCFCFCF)) },
-                backgroundColor = Color(0xFF090909),
-                contentColor = Color(0xFFCFCFCF),
+                title = { Text(text = "Perfil", color = MaterialTheme.colorScheme.tertiary) },
+                backgroundColor = MaterialTheme.colorScheme.onBackground,
+                contentColor = MaterialTheme.colorScheme.tertiary,
                 navigationIcon = {
                     IconButton(onClick = { onBackClick() }) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_back),
                             contentDescription = "Voltar",
-                            tint = Color(0xFFCFCFCF)
+                            tint = MaterialTheme.colorScheme.tertiary
                         )
                     }
                 }
@@ -46,7 +47,7 @@ fun ProfileScreen(userId: String, onBackClick: () -> Unit) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFF141414))
+                .background(MaterialTheme.colorScheme.background)
                 .padding(innerPadding)
                 .padding(horizontal = 16.dp, vertical = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -78,15 +79,9 @@ fun ProfileScreen(userId: String, onBackClick: () -> Unit) {
                     text = user?.name ?: "Usuário Desconhecido",
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFFCFCFCF)
+                    color = MaterialTheme.colorScheme.tertiary
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-//                Icon(
-//                    painter = painterResource(id = R.drawable.ic_edit),
-//                    contentDescription = "Editar nome",
-//                    tint = Color(0xFFCFCFCF),
-//                    modifier = Modifier.size(20.dp)
-//                )
             }
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -95,7 +90,7 @@ fun ProfileScreen(userId: String, onBackClick: () -> Unit) {
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
-                backgroundColor = Color(0xFF626262),
+                backgroundColor = MaterialTheme.colorScheme.onBackground,
                 elevation = 4.dp
             ) {
                 Column(
@@ -141,13 +136,13 @@ fun ProfileAttribute(icon: Int, value: String, unit: String) {
                 text = value,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFFCFCFCF)
+                color = MaterialTheme.colorScheme.secondary
             )
             if (unit.isNotEmpty()) {
                 Text(
                     text = unit,
                     fontSize = 14.sp,
-                    color = Color(0xFFCFCFCF)
+                    color = MaterialTheme.colorScheme.secondary
                 )
             }
         }

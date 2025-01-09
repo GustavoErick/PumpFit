@@ -11,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
@@ -139,7 +140,8 @@ fun MainScreen(isDarkTheme: MutableState<Boolean>) {
                         coroutineScope.launch {
                             snackBarHostState.showSnackbar("Favoritos limpados com sucesso!")
                         }
-                    }
+                    },
+                    isDarkTheme = isDarkTheme
                 )
             }
 
@@ -153,8 +155,8 @@ fun BottomNavigationBar(navController: NavController) {
     val currentRoute = navBackStackEntry?.destination?.route
 
     BottomNavigation(
-        backgroundColor = Color(0xFF090909),
-        contentColor = Color(0xFFCFCFCF)
+        backgroundColor = MaterialTheme.colorScheme.onBackground,
+        contentColor = MaterialTheme.colorScheme.secondary
     ) {
         BottomNavigationItem(
             icon = { Icon(Icons.Default.Home, contentDescription = "Home") },
@@ -167,8 +169,8 @@ fun BottomNavigationBar(navController: NavController) {
                     restoreState = true
                 }
             },
-            selectedContentColor = Color.Red,
-            unselectedContentColor = Color(0xFFCFCFCF)
+            selectedContentColor = MaterialTheme.colorScheme.primary,
+            unselectedContentColor = MaterialTheme.colorScheme.secondary
         )
 
         BottomNavigationItem(
@@ -182,8 +184,8 @@ fun BottomNavigationBar(navController: NavController) {
                     restoreState = true
                 }
             },
-            selectedContentColor = Color.Red,
-            unselectedContentColor = Color(0xFFCFCFCF)
+            selectedContentColor = MaterialTheme.colorScheme.primary,
+            unselectedContentColor = MaterialTheme.colorScheme.secondary
         )
 
         BottomNavigationItem(
@@ -197,8 +199,8 @@ fun BottomNavigationBar(navController: NavController) {
                     restoreState = true
                 }
             },
-            selectedContentColor = Color.Red,
-            unselectedContentColor = Color(0xFFCFCFCF)
+            selectedContentColor = MaterialTheme.colorScheme.primary,
+            unselectedContentColor = MaterialTheme.colorScheme.secondary
         )
     }
 }

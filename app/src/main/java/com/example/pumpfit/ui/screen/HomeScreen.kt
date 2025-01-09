@@ -63,13 +63,13 @@ fun HomeScreen(userId: String, navController: NavController, onMuscleGroupSelect
             Column {
                 Text(
                     text = greetingMessage,
-                    color = Color(0xFFCFCFCF), // Cor do texto
-                    style = MaterialTheme.typography.titleSmall
+                    color = MaterialTheme.colorScheme.tertiary, // Cor do texto
+                    style = MaterialTheme.typography.titleMedium
                 )
                 Text(
                     text = user?.name ?: "Usuário não encontrado",
-                    color = Color(0xFFCFCFCF), // Cor do texto
-                    style = MaterialTheme.typography.headlineMedium
+                    color = MaterialTheme.colorScheme.tertiary, // Cor do texto
+                    style = MaterialTheme.typography.headlineSmall
                 )
             }
             /*Row(verticalAlignment = Alignment.CenterVertically) {

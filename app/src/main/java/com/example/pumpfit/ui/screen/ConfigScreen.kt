@@ -5,6 +5,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -18,14 +21,14 @@ import com.example.pumpfit.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ConfigScreen(onBackClick: () -> Unit, onClearFavorites: () -> Unit) {
+fun ConfigScreen(onBackClick: () -> Unit, onClearFavorites: () -> Unit, isDarkTheme: MutableState<Boolean>) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
                     Text(
                         text = "Configurações",
-                        color = Color(0xFFCFCFCF),
+                        color = MaterialTheme.colorScheme.tertiary,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -35,14 +38,14 @@ fun ConfigScreen(onBackClick: () -> Unit, onClearFavorites: () -> Unit) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_back),
                             contentDescription = "Voltar",
-                            tint = Color(0xFFCFCFCF)
+                            tint = MaterialTheme.colorScheme.tertiary
                         )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFF090909),
-                    titleContentColor = Color(0xFFCFCFCF),
-                    navigationIconContentColor = Color(0xFFCFCFCF)
+                    containerColor = MaterialTheme.colorScheme.onBackground,
+                    titleContentColor = MaterialTheme.colorScheme.tertiary,
+                    navigationIconContentColor = MaterialTheme.colorScheme.tertiary
                 )
             )
 
@@ -51,7 +54,7 @@ fun ConfigScreen(onBackClick: () -> Unit, onClearFavorites: () -> Unit) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFF141414))
+                .background(MaterialTheme.colorScheme.background)
                 .padding(innerPadding)
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -71,6 +74,32 @@ fun ConfigScreen(onBackClick: () -> Unit, onClearFavorites: () -> Unit) {
             ) {
                 Text(text = "Limpar Favoritos", fontSize = 16.sp, fontWeight = FontWeight.Bold)
             }
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // Switch para alternar o tema
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = "Tema Escuro",
+                    color = MaterialTheme.colorScheme.tertiary,
+                    fontSize = 16.sp,
+                    modifier = Modifier.weight(1f)
+                )
+
+                Switch(
+                    checked = isDarkTheme.value,
+                    onCheckedChange = { isDarkTheme.value = it },
+                    colors = SwitchDefaults.colors(
+                        checkedThumbColor = Color.Red,
+                        uncheckedThumbColor = Color.Gray,
+                        checkedTrackColor = Color(0xFFB71C1C),
+                        uncheckedTrackColor = Color(0xFFB0BEC5)
+                    )
+                )
+            }
         }
     }
 }
@@ -80,7 +109,8 @@ fun ConfigScreen(onBackClick: () -> Unit, onClearFavorites: () -> Unit) {
 fun ConfigScreenPreview() {
     ConfigScreen(
         onBackClick = { },
-        onClearFavorites = { }
+        onClearFavorites = { },
+        isDarkTheme = remember {mutableStateOf(false)}
     )
 }
 

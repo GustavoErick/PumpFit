@@ -22,19 +22,20 @@ import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
     primary = Color.Red,
-//    secondary = Color(0xFF626262),
-    secondary = Color.Blue,
-    tertiary =Color.Gray ,
+    secondary = Color(0xFF626262),
+    tertiary =Color(0xFFCFCFCF) ,
     background = Color(0xFF141414),
+    onBackground = Color(0xFF090909),
+    surface = Color(0xFF626262),
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Color.Red,
-//    secondary = Color(0xFF626262),
-    secondary = Color.Blue,
-    tertiary =Color.Gray ,
+    primary = Color(0xFF141414),
+    secondary = Color(0xFF232222),
+    tertiary =Color.Black,
     background = Color.White,
-
+    onBackground = Color(0xFFCFCFCF),
+    surface = Color(0xFF9E9D9D),
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
     surface = Color(0xFFFFFBFE),
