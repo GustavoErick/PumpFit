@@ -35,7 +35,7 @@ import com.example.pumpfit.ui.screen.ProfileScreen
 import kotlinx.coroutines.launch
 
 @Composable
-fun MainScreen() {
+fun MainScreen(isDarkTheme: MutableState<Boolean>) {
     val navController = rememberNavController()
     val snackBarHostState = remember { SnackbarHostState() }
     val favoriteExercises = remember { mutableStateListOf<Exercise>() }
@@ -209,11 +209,11 @@ fun BottomNavigationBar(navController: NavController) {
 }
 
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewMainScreen() {
-    MainScreen()
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewMainScreen() {
+//    MainScreen()
+//}
 
 
 
