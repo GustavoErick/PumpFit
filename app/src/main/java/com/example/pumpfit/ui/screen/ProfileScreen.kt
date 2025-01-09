@@ -25,7 +25,6 @@ import com.example.pumpfit.model.mock.mockUsers
 @Composable
 fun ProfileScreen(userId: String, onBackClick: () -> Unit) {
     val user = mockUsers.find { it.id == userId }
-
     Scaffold(
         topBar = {
             TopAppBar(
