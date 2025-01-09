@@ -6,6 +6,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
@@ -16,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
 @Composable
@@ -24,9 +26,9 @@ fun Menu(navController: NavController) {
 
     Box() {
         // Botão dos 3 pontinhos
-        IconButton(onClick = { expanded = true }) {
+        IconButton(onClick = { expanded = !expanded }) {
             Icon(
-                Icons.Default.MoreVert, // Substitua com seu ícone de 3 pontinhos
+                Icons.Default.MoreVert,
                 contentDescription = "Menu",
                 tint = MaterialTheme.colorScheme.tertiary
             )
@@ -44,53 +46,52 @@ fun Menu(navController: NavController) {
             // Itens do menu
             DropdownMenuItem(onClick = {
                 expanded = false
-                navController.navigate("home", {
-                    popUpTo(navController.graph.startDestinationId) { saveState = true }
-                    launchSingleTop = true
-                    restoreState = true
-                })
-            }) {
-                Text("Tela Inicial", color = MaterialTheme.colorScheme.tertiary)
-            }
-            DropdownMenuItem(onClick = {
-                expanded = false
-                navController.navigate("favorites"){
+                navController.navigate("home") {
                     popUpTo(navController.graph.startDestinationId) { saveState = true }
                     launchSingleTop = true
                     restoreState = true
                 }
             }) {
-                Text("Favoritos", color = MaterialTheme.colorScheme.tertiary)
+                Text("Tela Inicial", fontSize = 16.sp, color = MaterialTheme.colorScheme.tertiary)
             }
             DropdownMenuItem(onClick = {
                 expanded = false
-                navController.navigate("settings"){
+                navController.navigate("favorites") {
                     popUpTo(navController.graph.startDestinationId) { saveState = true }
                     launchSingleTop = true
                     restoreState = true
                 }
             }) {
-                Text("Configurações", color = MaterialTheme.colorScheme.tertiary)
+                Text("Favoritos", fontSize = 16.sp, color = MaterialTheme.colorScheme.tertiary)
             }
             DropdownMenuItem(onClick = {
                 expanded = false
-                navController.navigate("home"){
+                navController.navigate("settings") {
                     popUpTo(navController.graph.startDestinationId) { saveState = true }
                     launchSingleTop = true
                     restoreState = true
                 }
             }) {
-                Text("Ajuda", color = MaterialTheme.colorScheme.tertiary)
+                Text("Configurações", fontSize = 16.sp, color = MaterialTheme.colorScheme.tertiary)
             }
             DropdownMenuItem(onClick = {
                 expanded = false
-                navController.navigate("home"){
+                navController.navigate("help") {
                     popUpTo(navController.graph.startDestinationId) { saveState = true }
                     launchSingleTop = true
                     restoreState = true
                 }
             }) {
-                Text("Logout", color = MaterialTheme.colorScheme.tertiary)
+                Text("Ajuda", fontSize = 16.sp, color = MaterialTheme.colorScheme.tertiary)
+            }
+            DropdownMenuItem(onClick = {
+                expanded = false
+                // Lógica para logout aqui
+                navController.navigate("login") {
+                    popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                }
+            }) {
+                Text("Logout", fontSize = 16.sp, color = MaterialTheme.colorScheme.tertiary)
             }
         }
     }
