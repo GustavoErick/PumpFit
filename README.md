@@ -82,7 +82,7 @@ O fluxo do aplicativo segue um esquema claro e organizado:
 ---
 
 ## 👥 Colaboradores
-**Gustavo Erick**: [LinkedIn](https://www.linkedin.com/in/venicius-feitosa-61a1521b5/) | [GitHub](https://github.com/GustavoErick)
+**Gustavo Erick**: [LinkedIn](https://www.linkedin.com/in/venicius-feitosa-61a1521b5/) | [GitHub](https://github.com/GustavoErick)  
 **Venicius Feitosa**: [GitHub](https://github.com/FeitosaVeni)
 
 ---
