@@ -84,10 +84,3 @@ O fluxo do aplicativo segue um esquema claro e organizado:
 ## 👥 Colaboradores
 **Gustavo Erick**: [LinkedIn](https://www.linkedin.com/in/gustavo-erick-806778313/) | [GitHub](https://github.com/GustavoErick)  
 **Venicius Feitosa**: [GitHub](https://github.com/FeitosaVeni)
-
----
-
-## 📄 Licença
-Este projeto está sob a licença MIT. Consulte o arquivo LICENSE para obter mais informações.
-
-
