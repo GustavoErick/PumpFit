@@ -1,4 +1,4 @@
-# PumpFit
+# 💪 PumpFit
 
 PumpFit é um aplicativo móvel desenvolvido com Jetpack Compose para ajudar os usuários na organização e execução de treinos de musculação. O aplicativo foi projetado para ser simples, intuitivo e altamente funcional, oferecendo recursos como lista de exercícios, personalização de favoritos, reprodução de vídeos e muito mais.
 
