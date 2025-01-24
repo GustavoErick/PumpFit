@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
@@ -24,6 +25,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.pumpfit.model.Exercise
+import com.example.pumpfit.model.datastore.SettingsDataStore
 import com.example.pumpfit.ui.screen.ExerciseDetailsScreen
 import com.example.pumpfit.ui.screen.ExerciseListScreen
 import com.example.pumpfit.ui.screen.HomeScreen
@@ -36,7 +38,9 @@ import com.example.pumpfit.ui.screen.ProfileScreen
 import kotlinx.coroutines.launch
 
 @Composable
-fun MainScreen(isDarkTheme: MutableState<Boolean>) {
+//fun MainScreen(isDarkTheme: MutableState<Boolean>) {
+//fun MainScreen(isDarkTheme: MutableState<Boolean>, settingsDataStore: SettingsDataStore) {
+fun MainScreen(isDarkTheme: Boolean, settingsDataStore: SettingsDataStore) {
     val navController = rememberNavController()
     val snackBarHostState = remember { SnackbarHostState() }
     val favoriteExercises = remember { mutableStateListOf<Exercise>() }
@@ -123,17 +127,11 @@ fun MainScreen(isDarkTheme: MutableState<Boolean>) {
                 )
             }
 
-//            composable("settings") {
-//                ConfigScreen(
-//                    onClearFavorites = {
-//                        favoriteExercises.clear()
-//                        coroutineScope.launch {
-//                            snackBarHostState.showSnackbar("Favoritos limpados com sucesso!")
-//                        }
-//                    },
-//                )
-//            }
             composable("settings") {
+                val context = LocalContext.current
+                val settingsDataStore = SettingsDataStore(context)
+                val scope = rememberCoroutineScope()
+
                 ConfigScreen(
                     onBackClick = { navController.popBackStack() },
                     onClearFavorites = {
@@ -142,7 +140,8 @@ fun MainScreen(isDarkTheme: MutableState<Boolean>) {
                             snackBarHostState.showSnackbar("Favoritos limpados com sucesso!")
                         }
                     },
-                    isDarkTheme = isDarkTheme
+                    settingsDataStore = settingsDataStore,
+                    scope = scope,
                 )
             }
 

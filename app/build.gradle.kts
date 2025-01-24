@@ -59,4 +59,9 @@ dependencies {
     // Outras dependências úteis
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 
+    //DataStore
+    //implementation("androidx.datastore:datastore-preferences:1.1.2")
+    implementation ("androidx.datastore:datastore-preferences:1.0.0")
+
+
 }
