@@ -17,113 +17,17 @@ import com.example.pumpfit.R
 import com.example.pumpfit.model.datastore.SettingsDataStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-//
-//
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//fun ConfigScreen(onBackClick: () -> Unit, onClearFavorites: () -> Unit, isDarkTheme: MutableState<Boolean>) {
-//    Scaffold(
-//        topBar = {
-//            TopAppBar(
-//                title = {
-//                    Text(
-//                        text = "Configurações",
-//                        color = MaterialTheme.colorScheme.tertiary,
-//                        fontSize = 20.sp,
-//                        fontWeight = FontWeight.Bold
-//                    )
-//                },
-//                navigationIcon = {
-//                    IconButton(onClick = { onBackClick() }) {
-//                        Icon(
-//                            painter = painterResource(id = R.drawable.ic_back),
-//                            contentDescription = "Voltar",
-//                            tint = MaterialTheme.colorScheme.tertiary
-//                        )
-//                    }
-//                },
-//                colors = TopAppBarDefaults.topAppBarColors(
-//                    containerColor = MaterialTheme.colorScheme.onBackground,
-//                    titleContentColor = MaterialTheme.colorScheme.tertiary,
-//                    navigationIconContentColor = MaterialTheme.colorScheme.tertiary
-//                )
-//            )
-//
-//        }
-//    ) { innerPadding ->
-//        Column(
-//            modifier = Modifier
-//                .fillMaxSize()
-//                .background(MaterialTheme.colorScheme.background)
-//                .padding(innerPadding)
-//                .padding(16.dp),
-//            horizontalAlignment = Alignment.CenterHorizontally
-//        ) {
-//            Spacer(modifier = Modifier.height(32.dp))
-//
-//            Button(
-//                onClick = { onClearFavorites() },
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .height(50.dp),
-//                colors = ButtonDefaults.buttonColors(
-//                    containerColor = Color.Red,
-//                    contentColor = Color.White
-//                ),
-//                shape = RoundedCornerShape(16.dp)
-//            ) {
-//                Text(text = "Limpar Favoritos", fontSize = 16.sp, fontWeight = FontWeight.Bold)
-//            }
-//
-//            Spacer(modifier = Modifier.height(32.dp))
-//
-//            // Switch para alternar o tema
-//            Row(
-//                verticalAlignment = Alignment.CenterVertically,
-//                modifier = Modifier.fillMaxWidth()
-//            ) {
-//                Text(
-//                    text = "Tema Escuro",
-//                    color = MaterialTheme.colorScheme.tertiary,
-//                    fontSize = 16.sp,
-//                    modifier = Modifier.weight(1f)
-//                )
-//
-//                Switch(
-//                    checked = isDarkTheme.value,
-//                    onCheckedChange = { isDarkTheme.value = it },
-//                    colors = SwitchDefaults.colors(
-//                        checkedThumbColor = Color.Red,
-//                        uncheckedThumbColor = Color.Gray,
-//                        checkedTrackColor = Color(0xFFB71C1C),
-//                        uncheckedTrackColor = Color(0xFFB0BEC5)
-//                    )
-//                )
-//            }
-//        }
-//    }
-//}
-//
-//@Preview(showBackground = true)
-//@Composable
-//fun ConfigScreenPreview() {
-//    ConfigScreen(
-//        onBackClick = { },
-//        onClearFavorites = { },
-//        isDarkTheme = remember {mutableStateOf(false)}
-//    )
-//}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConfigScreen(
     onBackClick: () -> Unit,
     onClearFavorites: () -> Unit,
-    settingsDataStore: SettingsDataStore, // Novo parâmetro
-    scope: CoroutineScope // Novo parâmetro
+    settingsDataStore: SettingsDataStore,
+    scope: CoroutineScope
 ) {
-    // Lógica existente
     val isDarkTheme = settingsDataStore.isDarkTheme.collectAsState(initial = false).value
+    val notificationsEnabled = settingsDataStore.notificationsEnabled.collectAsState(initial = true).value // Estado inicial
 
     Scaffold(
         topBar = {
@@ -195,7 +99,37 @@ fun ConfigScreen(
                     checked = isDarkTheme,
                     onCheckedChange = { isChecked ->
                         scope.launch {
-                            settingsDataStore.setDarkTheme(isChecked) // Atualiza o tema no DataStore
+                            settingsDataStore.setDarkTheme(isChecked)
+                        }
+                    },
+                    colors = SwitchDefaults.colors(
+                        checkedThumbColor = Color.Red,
+                        uncheckedThumbColor = Color.Gray,
+                        checkedTrackColor = Color(0xFFB71C1C),
+                        uncheckedTrackColor = Color(0xFFB0BEC5)
+                    )
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Switch para desativar e ativar as notificações
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = "Notificações",
+                    color = MaterialTheme.colorScheme.tertiary,
+                    fontSize = 16.sp,
+                    modifier = Modifier.weight(1f)
+                )
+
+                Switch(
+                    checked = notificationsEnabled,
+                    onCheckedChange = { isChecked ->
+                        scope.launch {
+                            settingsDataStore.setNotificationsEnabled(isChecked)
                         }
                     },
                     colors = SwitchDefaults.colors(
