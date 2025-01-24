@@ -27,7 +27,8 @@ fun ConfigScreen(
     scope: CoroutineScope
 ) {
     val isDarkTheme = settingsDataStore.isDarkTheme.collectAsState(initial = false).value
-    val notificationsEnabled = settingsDataStore.notificationsEnabled.collectAsState(initial = true).value // Estado inicial
+    val notificationsEnabled = settingsDataStore.notificationsEnabled.collectAsState(initial = true).value
+    val visualAnimations = settingsDataStore.visualAnimations.collectAsState(initial = true).value
 
     Scaffold(
         topBar = {
@@ -113,7 +114,7 @@ fun ConfigScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Switch para desativar e ativar as notificações
+            // Switch para desativar ou ativar as notificações
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
@@ -130,6 +131,36 @@ fun ConfigScreen(
                     onCheckedChange = { isChecked ->
                         scope.launch {
                             settingsDataStore.setNotificationsEnabled(isChecked)
+                        }
+                    },
+                    colors = SwitchDefaults.colors(
+                        checkedThumbColor = Color.Red,
+                        uncheckedThumbColor = Color.Gray,
+                        checkedTrackColor = Color(0xFFB71C1C),
+                        uncheckedTrackColor = Color(0xFFB0BEC5)
+                    )
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Switch para desativar ou ativar os efeitos visuais
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = "Animações",
+                    color = MaterialTheme.colorScheme.tertiary,
+                    fontSize = 16.sp,
+                    modifier = Modifier.weight(1f)
+                )
+
+                Switch(
+                    checked = visualAnimations,
+                    onCheckedChange = { isChecked ->
+                        scope.launch {
+                            settingsDataStore.setVisualAnimations(isChecked)
                         }
                     },
                     colors = SwitchDefaults.colors(
