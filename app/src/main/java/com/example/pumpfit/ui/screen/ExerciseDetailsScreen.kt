@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
@@ -24,11 +26,13 @@ import androidx.compose.ui.viewinterop.AndroidView
 import com.example.pumpfit.R
 import com.example.pumpfit.model.Exercise
 import com.example.pumpfit.model.mock.mockExercises
+import com.example.pumpfit.util.startTimer
 
 @Composable
 fun ExerciseDetailsScreen(exercise: Exercise, onBackClick: () -> Unit) {
     var isPlaying by remember { mutableStateOf(false) } // Controla se o vídeo está sendo reproduzido
-    //val context = LocalContext.current
+    var timeRemaining by remember { mutableStateOf(0L) } // Tempo restante em milissegundos
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -56,7 +60,6 @@ fun ExerciseDetailsScreen(exercise: Exercise, onBackClick: () -> Unit) {
                 .padding(16.dp)
         ) {
             if (!isPlaying) {
-                // Imagem com botão de vídeo
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -84,7 +87,6 @@ fun ExerciseDetailsScreen(exercise: Exercise, onBackClick: () -> Unit) {
                     }
                 }
             } else {
-                // Reproduz o vídeo
                 AndroidView(
                     factory = { context ->
                         VideoView(context).apply {
@@ -102,7 +104,6 @@ fun ExerciseDetailsScreen(exercise: Exercise, onBackClick: () -> Unit) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Nome do exercício e grupo muscular centralizados
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -144,6 +145,60 @@ fun ExerciseDetailsScreen(exercise: Exercise, onBackClick: () -> Unit) {
                 DetailsRow(label = "Metodologia", value = exercise.methodology)
                 DetailsRow(label = "Intervalo", value = exercise.interval)
             }
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            if (timeRemaining > 0) {
+                Text(
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    text = formatMillisToMinutesAndSeconds(timeRemaining),
+                    fontSize = 30.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.tertiary
+                )
+            } else if (timeRemaining == 0L) {
+                Text(
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    text = "00:00",
+                    fontSize = 30.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Botão para iniciar o temporizador
+            Button (
+                onClick = {
+                    val intervalMillis = parseIntervalToMillis(exercise.interval)
+                    timeRemaining = intervalMillis
+                    startTimer(context, intervalMillis)
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Red,
+                    contentColor = Color.White
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Text(
+                    text = "Iniciar Temporizador",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+            }
+        }
+
+        // Atualiza o temporizador
+        LaunchedEffect(timeRemaining) {
+            if (timeRemaining > 0) {
+                kotlinx.coroutines.delay(1000L)
+                timeRemaining -= 1000L
+            }
         }
     }
 }
@@ -172,6 +227,21 @@ fun Chip(text: String) {
     }
 }
 
+// Formata milissegundos para MM:SS
+fun formatMillisToMinutesAndSeconds(millis: Long): String {
+    val totalSeconds = millis / 1000
+    val minutes = totalSeconds / 60
+    val seconds = totalSeconds % 60
+    return String.format("%02d:%02d", minutes, seconds)
+}
+
+fun parseIntervalToMillis(interval: String): Long {
+    val parts = interval.split(":").map { it.toIntOrNull() ?: 0 }
+    val minutes = parts.getOrNull(0) ?: 0
+    val seconds = parts.getOrNull(1) ?: 0
+    return (minutes * 60 + seconds) * 1000L
+}
+
 @Preview(showBackground = true)
 @Composable
 fun PreviewExerciseDetailsScreen() {
@@ -180,4 +250,3 @@ fun PreviewExerciseDetailsScreen() {
         ExerciseDetailsScreen(exercise = it, onBackClick = {})
     }
 }
-
