@@ -47,6 +47,7 @@ dependencies {
     implementation("androidx.compose.foundation:foundation-layout")
     implementation("androidx.activity:activity-compose:1.7.2")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
     implementation("androidx.navigation:navigation-compose:2.7.3")
     implementation("androidx.compose.material:material-icons-extended:1.5.1")
 
@@ -63,5 +64,6 @@ dependencies {
     //implementation("androidx.datastore:datastore-preferences:1.1.2")
     implementation ("androidx.datastore:datastore-preferences:1.0.0")
 
-
+    //animações
+    implementation ("androidx.compose.animation:animation:1.5.4")
 }

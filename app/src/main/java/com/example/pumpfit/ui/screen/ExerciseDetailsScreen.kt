@@ -27,12 +27,19 @@ import com.example.pumpfit.R
 import com.example.pumpfit.model.Exercise
 import com.example.pumpfit.model.mock.mockExercises
 import com.example.pumpfit.util.startTimer
+import com.example.pumpfit.model.datastore.SettingsDataStore
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 
 @Composable
 fun ExerciseDetailsScreen(exercise: Exercise, onBackClick: () -> Unit) {
     var isPlaying by remember { mutableStateOf(false) } // Controla se o vídeo está sendo reproduzido
     var timeRemaining by remember { mutableStateOf(0L) } // Tempo restante em milissegundos
     val context = LocalContext.current
+    val videoProgress = remember { mutableStateOf(0f) }
+    var videoView: VideoView? by remember { mutableStateOf(null) }
+    val settingsDataStore = SettingsDataStore(context)
+    val animationationsEnabled = runBlocking { settingsDataStore.visualAnimations.first() }
 
     Scaffold(
         topBar = {
@@ -92,13 +99,27 @@ fun ExerciseDetailsScreen(exercise: Exercise, onBackClick: () -> Unit) {
                         VideoView(context).apply {
                             setVideoPath("android.resource://${context.packageName}/${exercise.video}")
                             setOnPreparedListener { it.start() } // Inicia o vídeo
-                            setOnCompletionListener { isPlaying = false } // Para o vídeo ao final
+                            setOnCompletionListener {
+                                isPlaying = false
+                                videoProgress.value = 0f
+                            }
+                            videoView = this
                         }
                     },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(200.dp)
                         .clip(RoundedCornerShape(16.dp))
+                )
+            }
+            //ProgressBar para o vídeo
+            if(isPlaying && animationationsEnabled) {
+                LinearProgressIndicator(
+                    progress = videoProgress.value,
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    color = MaterialTheme.colorScheme.primary,
+                    backgroundColor = MaterialTheme.colorScheme.onBackground
                 )
             }
 
@@ -198,6 +219,18 @@ fun ExerciseDetailsScreen(exercise: Exercise, onBackClick: () -> Unit) {
             if (timeRemaining > 0) {
                 kotlinx.coroutines.delay(1000L)
                 timeRemaining -= 1000L
+            }
+        }
+
+        // Atualiza o progresso do vídeo
+        LaunchedEffect(isPlaying) {
+            while (isPlaying && videoView != null) {
+                videoView?.let {
+                    val duration = it.duration
+                    val currentPosition = it.currentPosition
+                    videoProgress.value = currentPosition.toFloat() / duration.toFloat()
+                }
+                kotlinx.coroutines.delay(200L) // Atualiza a cada 200ms
             }
         }
     }
