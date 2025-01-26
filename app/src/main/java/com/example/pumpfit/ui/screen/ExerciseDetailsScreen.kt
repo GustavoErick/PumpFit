@@ -1,6 +1,7 @@
 package com.example.pumpfit.ui.screen
 
 import android.widget.VideoView
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -15,6 +16,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -25,21 +27,49 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.example.pumpfit.R
 import com.example.pumpfit.model.Exercise
-import com.example.pumpfit.model.mock.mockExercises
-import com.example.pumpfit.util.startTimer
 import com.example.pumpfit.model.datastore.SettingsDataStore
+import com.example.pumpfit.model.mock.mockExercises
+import com.example.pumpfit.model.viewmodels.ExerciseViewModel
+import com.example.pumpfit.util.startTimer
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 
 @Composable
-fun ExerciseDetailsScreen(exercise: Exercise, onBackClick: () -> Unit) {
+fun ExerciseDetailsScreen(
+    exercise: Exercise,
+    onBackClick: () -> Unit,
+    viewModel: ExerciseViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+) {
     var isPlaying by remember { mutableStateOf(false) } // Controla se o vídeo está sendo reproduzido
-    var timeRemaining by remember { mutableStateOf(0L) } // Tempo restante em milissegundos
+    /*var timeRemaining by remember { mutableStateOf(0L) }*/
+    val timeRemaining by viewModel.timeRemaining
     val context = LocalContext.current
     val videoProgress = remember { mutableStateOf(0f) }
     var videoView: VideoView? by remember { mutableStateOf(null) }
+    var isLoadingVideo by remember { mutableStateOf(false) }
+    var isLoading by remember { mutableStateOf(true) }
+
+
+    val shouldStartTimer = remember { mutableStateOf(false) }
     val settingsDataStore = SettingsDataStore(context)
-    val animationationsEnabled = runBlocking { settingsDataStore.visualAnimations.first() }
+    val animationsEnabled = runBlocking { settingsDataStore.visualAnimations.first() }
+    var isAnimating by remember { mutableStateOf(false) }
+    val scale by animateFloatAsState(
+        targetValue = if (isAnimating) 2f else 1f,
+        animationSpec = androidx.compose.animation.core.tween(durationMillis = 150),
+        finishedListener = { isAnimating = false } // Reseta após a animação
+    )
+    // Simula um atraso buscar os dados
+    LaunchedEffect(Unit) {
+        delay(1000) // Atraso de 1 segundo
+        isLoading = false
+
+        if (timeRemaining == 0L) {
+            val intervalMillis = parseIntervalToMillis(exercise.interval)
+/*            viewModel.startTimer(intervalMillis)*/
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -59,168 +89,237 @@ fun ExerciseDetailsScreen(exercise: Exercise, onBackClick: () -> Unit) {
             )
         }
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-                .padding(innerPadding)
-                .padding(16.dp)
-        ) {
-            if (!isPlaying) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(Color.Red), // Placeholder vermelho para imagem
-                    contentAlignment = Alignment.Center
-                ) {
-                    Image(
-                        painter = painterResource(id = exercise.image),
-                        contentDescription = "Imagem do exercício",
-                        modifier = Modifier.fillMaxSize()
-                    )
-                    IconButton(
-                        onClick = { isPlaying = true }, // Inicia o vídeo
+        if(!isLoading) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(innerPadding)
+                    .padding(16.dp)
+            ) {
+                if (!isPlaying) {
+                    Box(
                         modifier = Modifier
-                            .size(50.dp)
-                            .background(Color(0xFF090909), shape = CircleShape),
+                            .fillMaxWidth()
+                            .height(200.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(Color.Red), // Placeholder vermelho para imagem
+                        contentAlignment = Alignment.Center
                     ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_play),
-                            contentDescription = "Reproduzir vídeo",
-                            tint = Color.White
+                        Image(
+                            painter = painterResource(id = exercise.image),
+                            contentDescription = "Imagem do exercício",
+                            modifier = Modifier.fillMaxSize()
                         )
+                        IconButton(
+                            onClick = { isPlaying = true }, // Inicia o vídeo
+                            modifier = Modifier
+                                .size(50.dp)
+                                .background(Color(0xFF090909), shape = CircleShape),
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_play),
+                                contentDescription = "Reproduzir vídeo",
+                                tint = Color.White
+                            )
+                        }
+                    }
+                } else {
+                    AndroidView(
+                        factory = { context ->
+                            VideoView(context).apply {
+                                setVideoPath("android.resource://${context.packageName}/${exercise.video}")
+                                setOnPreparedListener {
+                                    isLoadingVideo = false
+                                    it.start()
+                                }
+                                setOnCompletionListener {
+                                    isPlaying = false
+                                    videoProgress.value = 0f
+                                }
+                                setOnErrorListener { _, _, _ ->
+                                    isLoadingVideo = false
+                                    false
+                                }
+                                isLoadingVideo = true
+                                videoView = this
+                            }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                    )
+
+                    if (isLoadingVideo) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(200.dp)
+                                .padding(vertical = 16.dp),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                CircularProgressIndicator(
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                                Text(
+                                    text = "Buscando...",
+                                    color = MaterialTheme.colorScheme.tertiary,
+                                    modifier = Modifier.padding(top = 8.dp)
+                                )
+                            }
+                        }
                     }
                 }
-            } else {
-                AndroidView(
-                    factory = { context ->
-                        VideoView(context).apply {
-                            setVideoPath("android.resource://${context.packageName}/${exercise.video}")
-                            setOnPreparedListener { it.start() } // Inicia o vídeo
-                            setOnCompletionListener {
-                                isPlaying = false
-                                videoProgress.value = 0f
-                            }
-                            videoView = this
-                        }
-                    },
+                //ProgressBar para o vídeo
+                if (isPlaying) {
+                    LinearProgressIndicator(
+                        progress = videoProgress.value,
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        color = MaterialTheme.colorScheme.primary,
+                        backgroundColor = MaterialTheme.colorScheme.onBackground
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = exercise.name,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.tertiary
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = exercise.muscleGroup,
+                        fontSize = 14.sp,
+                        color = MaterialTheme.colorScheme.tertiary
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Tags de Máquinas Utilizadas
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(200.dp)
-                        .clip(RoundedCornerShape(16.dp))
-                )
-            }
-            //ProgressBar para o vídeo
-            if(isPlaying && animationationsEnabled) {
-                LinearProgressIndicator(
-                    progress = videoProgress.value,
+                        .padding(vertical = 8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)
+                ) {
+                    exercise.machines.forEach { machine ->
+                        Chip(text = machine)
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Detalhes do exercício
+                Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                    DetailsRow(label = "Carga", value = exercise.weight)
+                    DetailsRow(label = "Séries", value = exercise.sets)
+                    DetailsRow(label = "Metodologia", value = exercise.methodology)
+                    DetailsRow(label = "Intervalo", value = exercise.interval)
+                }
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                if (timeRemaining > 3L) {
+                    Text(
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
+                        text = formatMillisToMinutesAndSeconds(timeRemaining),
+                        fontSize = 30.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.tertiary
+                    )
+                } else if (timeRemaining > 0L) {
+                    Text(
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
+                        text = formatMillisToMinutesAndSeconds(timeRemaining),
+                        fontSize = 30.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                } else if (timeRemaining == 0L) {
+                        Text(
+                            modifier = Modifier.align(Alignment.CenterHorizontally),
+                            text = "00:00",
+                            fontSize = 30.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Botão para iniciar o temporizador
+                Button(
+                    onClick = {
+                        val intervalMillis = parseIntervalToMillis(exercise.interval)
+                        /*timeRemaining = intervalMillis*/
+                        viewModel.startTimer(intervalMillis)
+                        startTimer(context, intervalMillis)
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Red,
+                        contentColor = Color.White
+                    ),
                     modifier = Modifier
-                        .fillMaxWidth(),
-                    color = MaterialTheme.colorScheme.primary,
-                    backgroundColor = MaterialTheme.colorScheme.onBackground
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = exercise.name,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.tertiary
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = exercise.muscleGroup,
-                    fontSize = 14.sp,
-                    color = MaterialTheme.colorScheme.tertiary
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Tags de Máquinas Utilizadas
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)
-            ) {
-                exercise.machines.forEach { machine ->
-                    Chip(text = machine)
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    shape = RoundedCornerShape(16.dp)
+                ) {
+                    Text(
+                        text = "Iniciar Temporizador",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
                 }
             }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Detalhes do exercício
-            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                DetailsRow(label = "Carga", value = exercise.weight)
-                DetailsRow(label = "Séries", value = exercise.sets)
-                DetailsRow(label = "Metodologia", value = exercise.methodology)
-                DetailsRow(label = "Intervalo", value = exercise.interval)
-            }
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            if (timeRemaining > 0) {
-                Text(
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
-                    text = formatMillisToMinutesAndSeconds(timeRemaining),
-                    fontSize = 30.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.tertiary
-                )
-            } else if (timeRemaining == 0L) {
-                Text(
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
-                    text = "00:00",
-                    fontSize = 30.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Botão para iniciar o temporizador
-            Button (
-                onClick = {
-                    val intervalMillis = parseIntervalToMillis(exercise.interval)
-                    timeRemaining = intervalMillis
-                    startTimer(context, intervalMillis)
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Red,
-                    contentColor = Color.White
-                ),
+        } else {
+            Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp),
-                shape = RoundedCornerShape(16.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = "Iniciar Temporizador",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                )
+                Column (
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.background)
+                        .padding(innerPadding)
+                        .padding(16.dp)
+                ){
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Text(
+                        text = "Buscando...",
+                        color = MaterialTheme.colorScheme.tertiary,
+                        modifier = Modifier.padding(top = 8.dp)
+                    )
+                }
             }
         }
 
+
         // Atualiza o temporizador
-        LaunchedEffect(timeRemaining) {
+        /*LaunchedEffect(timeRemaining) {
             if (timeRemaining > 0) {
                 kotlinx.coroutines.delay(1000L)
                 timeRemaining -= 1000L
             }
-        }
+        }*/
 
         // Atualiza o progresso do vídeo
         LaunchedEffect(isPlaying) {
@@ -275,6 +374,7 @@ fun parseIntervalToMillis(interval: String): Long {
     return (minutes * 60 + seconds) * 1000L
 }
 
+/*
 @Preview(showBackground = true)
 @Composable
 fun PreviewExerciseDetailsScreen() {
@@ -282,4 +382,4 @@ fun PreviewExerciseDetailsScreen() {
     exercise?.let {
         ExerciseDetailsScreen(exercise = it, onBackClick = {})
     }
-}
+}*/

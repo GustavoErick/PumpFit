@@ -1,5 +1,6 @@
 package com.example.pumpfit.ui.screen
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -10,17 +11,28 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.pumpfit.R
 import com.example.pumpfit.model.Exercise
+import com.example.pumpfit.model.datastore.SettingsDataStore
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 
 
 @Composable
@@ -32,6 +44,15 @@ fun ExerciseListScreen(
     onFavoriteClick: (Exercise) -> Unit, // Callback para adicionar/remover favoritos
     onBackClick: () -> Unit // Callback para o botão de voltar
 ) {
+    var isLoading by remember { mutableStateOf(true) }
+
+
+    // Simula um atraso buscar os dados
+    LaunchedEffect(Unit) {
+        delay(1000) // Atraso de 1 segundo
+        isLoading = false
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -50,23 +71,50 @@ fun ExerciseListScreen(
             )
         }
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-                .padding(innerPadding)
-                .padding(16.dp)
-        ) {
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+        if (isLoading) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                items(exercises) { exercise ->
-                    ExerciseCard(
-                        exercise = exercise,
-                        isFavorite = favoriteExercises.contains(exercise), // Verifica se está favoritado
-                        onFavoriteClick = { onFavoriteClick(exercise) }, // Callback para favoritar/desfavoritar
-                        onClick = { onExerciseClick(exercise.id) } // Navegação pelo ID do exercício
+                Column (
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(innerPadding)
+                    .padding(16.dp)
+                ){
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colorScheme.primary
                     )
+                    Text(
+                        text = "Buscando...",
+                        color = MaterialTheme.colorScheme.tertiary,
+                        modifier = Modifier.padding(top = 8.dp)
+                    )
+                }
+            }
+        } else {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(innerPadding)
+                    .padding(16.dp)
+            ) {
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    items(exercises) { exercise ->
+                        ExerciseCard(
+                            exercise = exercise,
+                            isFavorite = favoriteExercises.contains(exercise), // Verifica se está favoritado
+                            onFavoriteClick = { onFavoriteClick(exercise) }, // Callback para favoritar/desfavoritar
+                            onClick = { onExerciseClick(exercise.id) } // Navegação pelo ID do exercício
+                        )
+                    }
                 }
             }
         }
@@ -81,6 +129,18 @@ fun ExerciseCard(
     onFavoriteClick: (Exercise) -> Unit, // Callback para clicar no favorito
     onClick: () -> Unit // Callback para clicar no card
 ) {
+    var isAnimating by remember { mutableStateOf(false) } // Estado para controlar a animação
+
+    val context = LocalContext.current
+    val settingsDataStore = SettingsDataStore(context)
+    val animationsEnabled = runBlocking { settingsDataStore.visualAnimations.first() }
+
+    // Animação de escala para o ícone
+    val scale by animateFloatAsState(
+        targetValue = if (isAnimating) 2f else 1f,
+        animationSpec = androidx.compose.animation.core.tween(durationMillis = 150),
+        finishedListener = { isAnimating = false } // Reseta após a animação
+    )
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -121,12 +181,24 @@ fun ExerciseCard(
                 )
             }
             Spacer(modifier = Modifier.width(8.dp))
-            IconButton(onClick = { onFavoriteClick(exercise) }) {
-                Icon(
-                    painter = if (isFavorite) painterResource(R.drawable.ic_favorite) else painterResource(R.drawable.ic_favorite_border),
-                    contentDescription = "Favorite",
-                    tint = if (isFavorite) Color.Red else Color(0xFFCFCFCF)
-                )
+            IconButton(onClick = {
+                isAnimating = true
+                onFavoriteClick(exercise)
+            }) {
+                if (animationsEnabled) {
+                    Icon(
+                        painter = if (isFavorite) painterResource(R.drawable.ic_favorite) else painterResource(R.drawable.ic_favorite_border),
+                        contentDescription = "Favorite",
+                        tint = if (isFavorite) Color.Red else Color(0xFFCFCFCF),
+                        modifier = Modifier.scale(scale) // Aplica a escala ao ícone
+                    )
+                }else {
+                    Icon(
+                        painter = if (isFavorite) painterResource(R.drawable.ic_favorite) else painterResource(R.drawable.ic_favorite_border),
+                        contentDescription = "Favorite",
+                        tint = if (isFavorite) Color.Red else Color(0xFFCFCFCF)
+                    )
+                }
             }
         }
     }

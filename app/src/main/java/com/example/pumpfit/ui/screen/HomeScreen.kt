@@ -27,6 +27,7 @@ import androidx.navigation.NavController
 import com.example.pumpfit.model.MuscleGroup
 import com.example.pumpfit.components.Menu
 import androidx.compose.material3.MaterialTheme
+import kotlinx.coroutines.delay
 
 @Composable
 fun HomeScreen(userId: String, navController: NavController, onMuscleGroupSelected: (String) -> Unit) {
@@ -40,8 +41,15 @@ fun HomeScreen(userId: String, navController: NavController, onMuscleGroupSelect
     }
 
     var searchQuery by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false) }
 
-    // Filtra os agrupamentos musculares com base na pesquisa
+    // Simula um atraso buscar os dados
+    LaunchedEffect(searchQuery) {
+        isLoading = true
+        delay(1000) // Atraso de 1 segundo
+        isLoading = false
+    }
+
     val filteredMuscleGroups = remember(searchQuery) {
         mockMuscleGroups.filter { it.name.contains(searchQuery, ignoreCase = true) }
     }
@@ -72,21 +80,6 @@ fun HomeScreen(userId: String, navController: NavController, onMuscleGroupSelect
                     style = MaterialTheme.typography.headlineSmall
                 )
             }
-            /*Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    imageVector = Icons.Default.FitnessCenter,
-                    contentDescription = "Treino",
-                    tint = Color.Red,
-                    modifier = Modifier.size(24.dp)
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    text = "5", // Substitua pelo número real de dias
-                    color = Color.Red,
-                    style = MaterialTheme.typography.h6
-                )
-
-            }*/
 
             Menu(navController = navController)
 
@@ -105,7 +98,8 @@ fun HomeScreen(userId: String, navController: NavController, onMuscleGroupSelect
                 backgroundColor = Color(0xFF626262),
                 focusedBorderColor = Color.Transparent,
                 unfocusedBorderColor = Color.Transparent,
-                textColor = Color(0xFFCFCFCF)
+                textColor = Color(0xFFCFCFCF),
+                cursorColor = Color(0xFFCFCFCF)
             ),
             leadingIcon = {
                 Icon(
@@ -118,18 +112,57 @@ fun HomeScreen(userId: String, navController: NavController, onMuscleGroupSelect
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // LazyColumn para exibir os Cards
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier.fillMaxSize()
-        ) {
-            items(filteredMuscleGroups) { muscleGroup ->
-                MuscleGroupCard(
-                    muscleGroup = muscleGroup,
-                    onClick = { onMuscleGroupSelected(muscleGroup.id) }
-                )
+        if (isLoading) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column (
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ){
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Text(
+                        text = "Buscando...",
+                        color = MaterialTheme.colorScheme.tertiary,
+                        modifier = Modifier.padding(top = 8.dp)
+                    )
+                }
             }
         }
+
+        // LazyColumn para exibir os Cards
+        if (!isLoading){
+            if (filteredMuscleGroups.isEmpty()) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Nenhum resultado encontrado.",
+                        color = MaterialTheme.colorScheme.tertiary,
+                        fontSize = 16.sp
+                    )
+                }
+            } else {
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    items(filteredMuscleGroups) { muscleGroup ->
+                        MuscleGroupCard(
+                            muscleGroup = muscleGroup,
+                            onClick = { onMuscleGroupSelected(muscleGroup.id) }
+                        )
+                    }
+                }
+            }
+        }
+
     }
 }
 
