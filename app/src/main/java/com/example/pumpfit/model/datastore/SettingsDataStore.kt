@@ -17,6 +17,7 @@ class SettingsDataStore(private val context: Context) {
     companion object {
         val NOTIFICATIONS_ENABLED = booleanPreferencesKey("notifications_enabled")
         val IS_DARK_THEME = booleanPreferencesKey("is_dark_theme")
+        val USE_DEVICE_THEME = booleanPreferencesKey("use_device_theme")
         val VISUAL_ANIMATIONS = booleanPreferencesKey("visual_animations")
         val FAVORITES = stringSetPreferencesKey("favorites")
     }
@@ -32,6 +33,10 @@ class SettingsDataStore(private val context: Context) {
     // Fluxo para acompanhar se as animações visuais estão ativadas
     val visualAnimations: Flow<Boolean> = context.dataStore.data
         .map { preferences -> preferences[VISUAL_ANIMATIONS] ?: true } // Padrão: ativado
+
+    // Fluxo para acompanhar se o tema do dispositivo está sendo usado
+    val useDeviceTheme: Flow<Boolean> = context.dataStore.data
+        .map { preferences -> preferences[USE_DEVICE_THEME] ?: true } // Padrão: ativado
 
     // Fluxo para obter a lista de favoritos
     val favorites: Flow<Set<String>> = context.dataStore.data
@@ -55,6 +60,13 @@ class SettingsDataStore(private val context: Context) {
     suspend fun setVisualAnimations(enabled: Boolean) {
         context.dataStore.edit { preferences ->
             preferences[VISUAL_ANIMATIONS] = enabled
+        }
+    }
+
+    // Função para atualizar o estado de uso do tema do dispositivo
+    suspend fun setUseDeviceTheme(useDeviceTheme: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[USE_DEVICE_THEME] = useDeviceTheme
         }
     }
 

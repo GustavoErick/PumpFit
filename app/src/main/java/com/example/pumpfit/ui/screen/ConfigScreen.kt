@@ -29,7 +29,7 @@ fun ConfigScreen(
     val isDarkTheme = settingsDataStore.isDarkTheme.collectAsState(initial = false).value
     val notificationsEnabled = settingsDataStore.notificationsEnabled.collectAsState(initial = true).value
     val visualAnimations = settingsDataStore.visualAnimations.collectAsState(initial = true).value
-
+    val useDeviceTheme = settingsDataStore.useDeviceTheme.collectAsState(initial = true).value
     Scaffold(
         topBar = {
             TopAppBar(
@@ -84,32 +84,62 @@ fun ConfigScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Switch para alternar o tema
+            // Checkbox para usar o tema do sistema
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = "Tema Escuro",
+                    text = "Usar tema do sistema",
                     color = MaterialTheme.colorScheme.tertiary,
                     fontSize = 16.sp,
                     modifier = Modifier.weight(1f)
                 )
 
-                Switch(
-                    checked = isDarkTheme,
+                Checkbox(
+                    checked = useDeviceTheme,
                     onCheckedChange = { isChecked ->
                         scope.launch {
-                            settingsDataStore.setDarkTheme(isChecked)
+                            settingsDataStore.setUseDeviceTheme(isChecked)
                         }
                     },
-                    colors = SwitchDefaults.colors(
-                        checkedThumbColor = Color.Red,
-                        uncheckedThumbColor = Color.Gray,
-                        checkedTrackColor = Color(0xFFB71C1C),
-                        uncheckedTrackColor = Color(0xFFB0BEC5)
+                    colors = CheckboxDefaults.colors(
+                        checkedColor = Color.Red,
+                        uncheckedColor = Color.Gray
                     )
                 )
+            }
+
+            // Switch para alternar o tema
+            if (!useDeviceTheme) {
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = "Tema Escuro",
+                        color = MaterialTheme.colorScheme.tertiary,
+                        fontSize = 16.sp,
+                        modifier = Modifier.weight(1f)
+                    )
+
+                    Switch(
+                        checked = isDarkTheme,
+                        onCheckedChange = { isChecked ->
+                            scope.launch {
+                                settingsDataStore.setDarkTheme(isChecked)
+                            }
+                        },
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = Color.Red,
+                            uncheckedThumbColor = Color.Gray,
+                            checkedTrackColor = Color(0xFFB71C1C),
+                            uncheckedTrackColor = Color(0xFFB0BEC5)
+                        )
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
