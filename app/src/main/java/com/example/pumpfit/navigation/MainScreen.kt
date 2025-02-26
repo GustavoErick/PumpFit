@@ -18,10 +18,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -36,22 +34,25 @@ import com.example.pumpfit.ui.screen.ExerciseListScreen
 import com.example.pumpfit.ui.screen.HomeScreen
 import com.example.pumpfit.model.mock.mockExercises
 import com.example.pumpfit.model.mock.mockMuscleGroups
+import com.example.pumpfit.model.viewmodels.AuthViewModel
 import com.example.pumpfit.model.viewmodels.ExerciseViewModel
 import com.example.pumpfit.ui.screen.ConfigScreen
 import com.example.pumpfit.ui.screen.FavoritesScreen
 import com.example.pumpfit.ui.screen.HelpScreen
 import com.example.pumpfit.ui.screen.ProfileScreen
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import com.example.pumpfit.ui.screen.*
 
 @Composable
-fun MainScreen(isDarkTheme: Boolean, settingsDataStore: SettingsDataStore) {
+fun MainScreen(isDarkTheme: Boolean, settingsDataStore: SettingsDataStore, authViewModel: AuthViewModel) {
     val navController = rememberNavController()
     val snackBarHostState = remember { SnackbarHostState() }
     val favoriteExercises = remember { mutableStateListOf<Exercise>() }
     var favoritesFromDataStorage by remember { mutableStateOf(emptyList<String>()) }
+    val viewModelExercise: ExerciseViewModel = viewModel(LocalContext.current as ViewModelStoreOwner)
+
     LaunchedEffect(Unit) {
         favoritesFromDataStorage = settingsDataStore.favorites.first().toList()
         favoritesFromDataStorage.forEach { id ->
@@ -61,34 +62,98 @@ fun MainScreen(isDarkTheme: Boolean, settingsDataStore: SettingsDataStore) {
 
     val coroutineScope = rememberCoroutineScope()
     val animationsEnabled = runBlocking { settingsDataStore.visualAnimations.first() }
-    val viewModelExercise: ExerciseViewModel = viewModel(LocalContext.current as ViewModelStoreOwner)
 
-    fun toggleFavorite(
-        exercise: Exercise,
-        favoriteExercises: SnapshotStateList<Exercise>,
-        settingsDataStore: SettingsDataStore,
-        coroutineScope: CoroutineScope
-    ) {
-        if (favoriteExercises.contains(exercise)) {
-            coroutineScope.launch { settingsDataStore.removeFavorite(exercise.id) }
-        } else {
-            coroutineScope.launch { settingsDataStore.addFavorite(exercise.id) }
-        }
-    }
-
-
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+    val showBottomBar = currentRoute !in listOf("login", "register", "forgotPassword")
 
     Scaffold(
-        bottomBar = {
-            BottomNavigationBar(navController = navController) // Bottom Bar gerenciada aqui
-        },
+        //bottomBar = { BottomNavigationBar(navController = navController) },
+        bottomBar = { if (showBottomBar) BottomNavigationBar(navController) },
         snackbarHost = { SnackbarHost(hostState = snackBarHostState) }
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = "home",
+//            startDestination = "home",
+            startDestination = if (authViewModel.isUserLogged.collectAsState(initial = false).value) "home" else "login",
             modifier = Modifier.padding(innerPadding)
         ) {
+            composable("login") {
+                if(animationsEnabled){
+                    var isVisible by remember { mutableStateOf(false) }
+                    LaunchedEffect(Unit) {
+                        isVisible = true // Torna a tela visível
+                    }
+
+                    AnimatedVisibility(
+                        visible = isVisible,
+                        enter = fadeIn() + slideInHorizontally(initialOffsetX = { 1000 }), // Animação de entrada
+                    ){
+                        LoginScreen(
+                            viewModel = authViewModel,
+                            navController = navController,
+                            settingsDataStore = settingsDataStore
+                        )
+                    }
+                } else {
+                    LoginScreen(
+                        viewModel = authViewModel,
+                        navController = navController,
+                        settingsDataStore = settingsDataStore
+                    )
+                }
+            }
+
+            composable("register") {
+                if(animationsEnabled){
+                    var isVisible by remember { mutableStateOf(false) }
+                    LaunchedEffect(Unit) {
+                        isVisible = true // Torna a tela visível
+                    }
+
+                    AnimatedVisibility(
+                        visible = isVisible,
+                        enter = fadeIn() + slideInHorizontally(initialOffsetX = { 1000 }), // Animação de entrada
+                    ){
+                        RegisterScreen(
+                            viewModel = authViewModel,
+                            navController = navController,
+                            settingsDataStore = settingsDataStore
+                        )
+                    }
+                } else {
+                    RegisterScreen(
+                        viewModel = authViewModel,
+                        navController = navController,
+                        settingsDataStore = settingsDataStore
+                    )
+                }
+            }
+
+            composable("forgotPassword") {
+                if(animationsEnabled){
+                    var isVisible by remember { mutableStateOf(false) }
+                    LaunchedEffect(Unit) {
+                        isVisible = true // Torna a tela visível
+                    }
+
+                    AnimatedVisibility(
+                        visible = isVisible,
+                        enter = fadeIn() + slideInHorizontally(initialOffsetX = { 1000 }), // Animação de entrada
+                    ){
+                        ForgotPasswordScreen(
+                            viewModel = authViewModel,
+                            navController = navController
+                        )
+                    }
+                } else {
+                    ForgotPasswordScreen(
+                        viewModel = authViewModel,
+                        navController = navController
+                    )
+                }
+            }
+
             composable("home") {
 
                 if(animationsEnabled){
@@ -106,16 +171,18 @@ fun MainScreen(isDarkTheme: Boolean, settingsDataStore: SettingsDataStore) {
                             navController = navController,
                             onMuscleGroupSelected = { muscleGroupId ->
                                 navController.navigate("exerciseList/$muscleGroupId")
-                            }
+                            },
+                            authViewModel
                         )
                     }
                 } else {
                     HomeScreen(
-                        userId = "5", // ID de usuário no mock
+                        userId = "5",
                         navController = navController,
                         onMuscleGroupSelected = { muscleGroupId ->
                             navController.navigate("exerciseList/$muscleGroupId")
-                        }
+                        },
+                        authViewModel
                     )
                 }
             }
