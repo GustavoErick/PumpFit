@@ -92,4 +92,16 @@ class SettingsDataStore(private val context: Context) {
             preferences[FAVORITES] = emptySet()
         }
     }
+
+    val IS_USER_LOGGED_IN = booleanPreferencesKey("is_user_logged_in")
+
+    val isUserLoggedIn: Flow<Boolean> = context.dataStore.data
+        .map { preferences -> preferences[IS_USER_LOGGED_IN] ?: false }
+
+    suspend fun setUserLoggedIn(loggedIn: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[IS_USER_LOGGED_IN] = loggedIn
+        }
+    }
+
 }

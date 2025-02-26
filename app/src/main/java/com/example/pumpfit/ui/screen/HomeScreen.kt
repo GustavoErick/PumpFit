@@ -27,12 +27,14 @@ import androidx.navigation.NavController
 import com.example.pumpfit.model.MuscleGroup
 import com.example.pumpfit.components.Menu
 import androidx.compose.material3.MaterialTheme
+import com.example.pumpfit.model.data.AuthRepository
+import com.example.pumpfit.model.viewmodels.AuthViewModel
 import kotlinx.coroutines.delay
 import java.util.Calendar
 import java.util.TimeZone
 
 @Composable
-fun HomeScreen(userId: String, navController: NavController, onMuscleGroupSelected: (String) -> Unit) {
+fun HomeScreen(userId: String, navController: NavController, onMuscleGroupSelected: (String) -> Unit, authViewModel: AuthViewModel) {
 
     val user = mockUsers.find { it.id == userId }
     val currentHour = remember {
@@ -88,7 +90,7 @@ fun HomeScreen(userId: String, navController: NavController, onMuscleGroupSelect
                 )
             }
 
-            Menu(navController = navController)
+            Menu(navController, authViewModel)
 
         }
 

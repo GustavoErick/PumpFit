@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "631682151264",
+    "project_id": "pumpfit-51da9",
+    "storage_bucket": "pumpfit-51da9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:631682151264:android:35b6f90233715d5349e405",
+        "android_client_info": {
+          "package_name": "com.example.pumpfit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "631682151264-dipekh7u7gjcushfrmvhnpmnfhnqi9j3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.pumpfit",
+            "certificate_hash": "084a61d5f26f40ca3e6d295874d04428d73d0eb2"
+          }
+        },
+        {
+          "client_id": "631682151264-amqkruo2j44mq2eqd94lv3sr4ssh3ufs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfnsmbsRPngzsIqmS9mkQkRAJ76nPJThI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "631682151264-amqkruo2j44mq2eqd94lv3sr4ssh3ufs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
