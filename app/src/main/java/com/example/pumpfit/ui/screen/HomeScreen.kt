@@ -27,14 +27,22 @@ import androidx.navigation.NavController
 import com.example.pumpfit.model.MuscleGroup
 import com.example.pumpfit.components.Menu
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pumpfit.model.data.AuthRepository
 import com.example.pumpfit.model.viewmodels.AuthViewModel
+import com.example.pumpfit.model.viewmodels.MuscleViewModel
 import kotlinx.coroutines.delay
 import java.util.Calendar
 import java.util.TimeZone
 
 @Composable
-fun HomeScreen(userId: String, navController: NavController, onMuscleGroupSelected: (String) -> Unit, authViewModel: AuthViewModel) {
+fun HomeScreen(userId: String, navController: NavController, onMuscleGroupSelected: (String) -> Unit, authViewModel: AuthViewModel, viewModel: MuscleViewModel = viewModel()) {
+    val muscleGroups by viewModel.muscleGroupsLiveData.observeAsState(emptyList())
+
+    LaunchedEffect(Unit) {
+        viewModel.fetchMuscleGroups()
+    }
 
     val user = mockUsers.find { it.id == userId }
     val currentHour = remember {
@@ -121,7 +129,7 @@ fun HomeScreen(userId: String, navController: NavController, onMuscleGroupSelect
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        if (isLoading) {
+        /*if (isLoading) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -142,7 +150,7 @@ fun HomeScreen(userId: String, navController: NavController, onMuscleGroupSelect
                     )
                 }
             }
-        }
+        }*/
 
         // LazyColumn para exibir os Cards
         if (!isLoading){
@@ -162,11 +170,30 @@ fun HomeScreen(userId: String, navController: NavController, onMuscleGroupSelect
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    items(filteredMuscleGroups) { muscleGroup ->
+                    /*items(filteredMuscleGroups) { muscleGroup ->
                         MuscleGroupCard(
                             muscleGroup = muscleGroup,
                             onClick = { onMuscleGroupSelected(muscleGroup.id) }
                         )
+                    }*/
+
+                    items(muscleGroups) { group ->
+                        Card(
+                            shape = MaterialTheme.shapes.medium,
+                            elevation = 4.dp,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp)
+                        ) {
+                            Text(
+                                text = group,
+                                color = Color.White,
+                                fontSize = 20.sp,
+                                modifier = Modifier
+                                    .background(Color.Black.copy(alpha = 0.5f), shape = RoundedCornerShape(30.dp))
+                                    .padding(horizontal = 8.dp, vertical = 4.dp)
+                            )
+                        }
                     }
                 }
             }
