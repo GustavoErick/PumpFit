@@ -6,6 +6,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -15,6 +17,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -54,7 +57,6 @@ fun LoginScreen(
             account?.idToken?.let { idToken ->
                 viewModel.loginWithGoogle(idToken) { success ->
                     if (success) {
-                        // Salva no DataStore que o usuário está logado
                         scope.launch {
                             settingsDataStore.setUserLoggedIn(true)
                         }
@@ -62,11 +64,7 @@ fun LoginScreen(
                             popUpTo("login") { inclusive = true }
                         }
                     } else {
-                        Toast.makeText(
-                            context,
-                            "Erro ao fazer login com Google",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(context, "Erro ao fazer login com Google", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -80,27 +78,30 @@ fun LoginScreen(
         enter = slideInVertically() + fadeIn()
     ) {
         Box(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background) // Cor de fundo
+                .padding(16.dp),
             contentAlignment = Alignment.Center
         ) {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(20.dp),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.pumpfit_logo),
+                Image(
+                    painter = painterResource(id = R.drawable.icone_pumpfit),
                     contentDescription = "App Logo",
-                    modifier = Modifier.size(80.dp)
+                    modifier = Modifier.size(100.dp)
                 )
+
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
                     "Bem-vindo ao PumpFit!",
                     fontSize = 30.sp,
-                    style = MaterialTheme.typography.headlineLarge
+                    style = MaterialTheme.typography.headlineLarge,
+                    color = MaterialTheme.colorScheme.tertiary
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -120,56 +121,28 @@ fun LoginScreen(
                     isPassword = true
                 )
 
-                Spacer(modifier = Modifier.height(6.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-//                Button(
-//                    onClick = {
-//                        viewModel.login(email, password) { success ->
-//                            if (success) {
-//                                // Salva no DataStore que o usuário está logado
-//                                scope.launch {
-//                                    settingsDataStore.setUserLoggedIn(true)
-//                                }
-//                                navController.navigate("home") {
-//                                    popUpTo("login") { inclusive = true }
-//                                }
-//                            } else {
-//                                Toast.makeText(
-//                                    context,
-//                                    "Usuário ou senha inválida",
-//                                    Toast.LENGTH_SHORT
-//                                ).show()
-//                            }
-//                        }
-//                    },
-//                    modifier = Modifier.fillMaxWidth(),
-//                    shape = RoundedCornerShape(8.dp)
-//                ) {
-//                    Text("Entrar", fontSize = 18.sp)
-//                }
                 Button(
                     onClick = {
                         viewModel.login(email, password) { success ->
                             if (success) {
                                 scope.launch {
-                                    settingsDataStore.setUserLoggedIn(true) // Salva o estado de login
+                                    settingsDataStore.setUserLoggedIn(true)
                                 }
                                 navController.navigate("home") {
                                     popUpTo("login") { inclusive = true }
                                 }
                             } else {
-                                Toast.makeText(
-                                    context,
-                                    "Usuário ou senha inválida",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                Toast.makeText(context, "Usuário ou senha inválida", Toast.LENGTH_SHORT).show()
                             }
                         }
                     },
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(8.dp)
+                    shape = RoundedCornerShape(30.dp), // Mantendo o estilo arredondado
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                 ) {
-                    Text("Entrar", fontSize = 18.sp)
+                    Text("Entrar", fontSize = 18.sp, color = MaterialTheme.colorScheme.onBackground)
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -180,25 +153,27 @@ fun LoginScreen(
                         googleSignInLauncher.launch(signInIntent)
                     },
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(8.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                    shape = RoundedCornerShape(30.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.google_logo),
                         contentDescription = "Google Login",
                         modifier = Modifier.size(24.dp),
-                        tint = MaterialTheme.colorScheme.onPrimary
+                        tint = MaterialTheme.colorScheme.onBackground
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("Entrar com Google", fontSize = 18.sp)
+                    Text("Entrar com Google", fontSize = 18.sp, color = MaterialTheme.colorScheme.onBackground)
                 }
 
+                Spacer(modifier = Modifier.height(8.dp))
+
                 TextButton(onClick = { navController.navigate("register") }) {
-                    Text("Criar Conta")
+                    Text("Criar Conta", color = MaterialTheme.colorScheme.tertiary)
                 }
 
                 TextButton(onClick = { navController.navigate("forgotPassword") }) {
-                    Text("Esqueci minha senha")
+                    Text("Esqueci minha senha", color = MaterialTheme.colorScheme.tertiary)
                 }
             }
         }
@@ -216,13 +191,19 @@ fun CustomTextField(
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
-        label = { Text(label) },
-        leadingIcon = { Icon(icon, contentDescription = null) },
+        label = { Text(label, color = MaterialTheme.colorScheme.tertiary) },
+        leadingIcon = { Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
         visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(8.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(30.dp)), // Bordas arredondadas igual ao HomeScreen
+        shape = RoundedCornerShape(30.dp),
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
+            focusedTextColor = MaterialTheme.colorScheme.tertiary,
+            unfocusedTextColor = MaterialTheme.colorScheme.tertiary,
+            cursorColor = MaterialTheme.colorScheme.primary
+        )
     )
 }
-
-
-

@@ -4,6 +4,8 @@ import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -15,12 +17,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.pumpfit.model.datastore.SettingsDataStore
 import com.example.pumpfit.model.viewmodels.AuthViewModel
 import kotlinx.coroutines.launch
+import com.example.pumpfit.R
 
 @Composable
 fun RegisterScreen(
@@ -39,18 +43,35 @@ fun RegisterScreen(
         isVisible = true // Ativa animação ao entrar na tela
     }
 
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        AnimatedVisibility(
-            visible = isVisible,
-            enter = slideInVertically() + fadeIn()
+    AnimatedVisibility(
+        visible = isVisible,
+        enter = slideInVertically() + fadeIn()
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background) // Cor de fundo
+                .padding(16.dp),
+            contentAlignment = Alignment.Center
         ) {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(20.dp),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("Criar Conta", fontSize = 30.sp, style = MaterialTheme.typography.headlineLarge)
+                Image(
+                    painter = painterResource(id = R.drawable.icone_pumpfit),
+                    contentDescription = "App Logo",
+                    modifier = Modifier.size(100.dp)
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    "Criar Conta",
+                    fontSize = 30.sp,
+                    style = MaterialTheme.typography.headlineLarge,
+                    color = MaterialTheme.colorScheme.tertiary
+                )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -60,6 +81,7 @@ fun RegisterScreen(
                     label = "Nome",
                     icon = Icons.Filled.Person
                 )
+
                 CustomTextField(
                     value = email,
                     onValueChange = { email = it },
@@ -77,29 +99,6 @@ fun RegisterScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-//                Button(
-//                    onClick = {
-//                        viewModel.register(email, password, name) { success ->
-//                            if (success) {
-//                                // Salva no DataStore que o usuário está logado
-//                                scope.launch {
-//                                    settingsDataStore.setUserLoggedIn(true)
-//                                }
-//                                navController.navigate("home") {
-//                                    popUpTo("register") { inclusive = true }
-//                                }
-//                            } else {
-//                                Toast.makeText(context, "Erro no cadastro", Toast.LENGTH_LONG).show()
-//                            }
-//                        }
-//                    },
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .height(50.dp),
-//                    shape = RoundedCornerShape(8.dp)
-//                ) {
-//                    Text("Registrar", fontSize = 18.sp)
-//                }
                 Button(
                     onClick = {
                         viewModel.register(email, password, name) { success, message ->
@@ -121,18 +120,22 @@ fun RegisterScreen(
                             }
                         }
                     },
-                    modifier = Modifier.fillMaxWidth().height(50.dp),
-                    shape = RoundedCornerShape(8.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    shape = RoundedCornerShape(30.dp), // Mantendo o estilo arredondado
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                 ) {
-                    Text("Registrar", fontSize = 18.sp)
+                    Text("Registrar", fontSize = 18.sp, color = MaterialTheme.colorScheme.onBackground)
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 TextButton(onClick = { navController.navigate("login") }) {
-                    Text("Já tem uma conta? Faça login")
+                    Text("Já tem uma conta? Faça login", color = MaterialTheme.colorScheme.tertiary)
                 }
             }
         }
     }
 }
+
