@@ -30,12 +30,19 @@ import androidx.compose.material3.MaterialTheme
 import com.example.pumpfit.model.data.AuthRepository
 import com.example.pumpfit.model.viewmodels.AuthViewModel
 import kotlinx.coroutines.delay
+import java.util.Calendar
+import java.util.TimeZone
 
 @Composable
 fun HomeScreen(userId: String, navController: NavController, onMuscleGroupSelected: (String) -> Unit, authViewModel: AuthViewModel) {
 
     val user = mockUsers.find { it.id == userId }
-    val currentHour = java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY)
+    val currentHour = remember {
+        val tz = TimeZone.getDefault()
+        val calendar = Calendar.getInstance(tz)
+        calendar.get(Calendar.HOUR_OF_DAY)
+    }
+
     val greetingMessage = when {
         currentHour in 5..11 -> "Bom dia,"
         currentHour in 12..17 -> "Boa tarde,"
@@ -196,4 +203,3 @@ fun MuscleGroupCard(muscleGroup: MuscleGroup, onClick: () -> Unit) {
         )
     }
 }
-
