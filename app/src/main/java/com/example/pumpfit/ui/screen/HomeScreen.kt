@@ -63,6 +63,16 @@ fun HomeScreen(userId: String, navController: NavController, onMuscleGroupSelect
         mockMuscleGroups.filter { it.name.contains(searchQuery, ignoreCase = true) }
     }
 
+    // Estado para armazenar o nome do usuário
+    var userName by remember { mutableStateOf<String?>(null) }
+
+    // Buscar o nome do usuário assim que a tela for aberta
+    LaunchedEffect(Unit) {
+        authViewModel.getUserName { name ->
+            userName = name ?: "Usuário não encontrado"
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -84,7 +94,8 @@ fun HomeScreen(userId: String, navController: NavController, onMuscleGroupSelect
                     style = MaterialTheme.typography.titleMedium
                 )
                 Text(
-                    text = user?.name ?: "Usuário não encontrado",
+//                    text = user?.name ?: "Usuário não encontrado",
+                    text = userName ?: "Carregando...",
                     color = MaterialTheme.colorScheme.tertiary, // Cor do texto
                     style = MaterialTheme.typography.headlineSmall
                 )

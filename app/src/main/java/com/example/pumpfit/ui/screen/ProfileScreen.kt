@@ -8,6 +8,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,11 +25,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.pumpfit.R
 import com.example.pumpfit.model.mock.mockUsers
+import com.example.pumpfit.model.viewmodels.AuthViewModel
 
 
 @Composable
-fun ProfileScreen(userId: String, onBackClick: () -> Unit) {
+fun ProfileScreen(userId: String, onBackClick: () -> Unit, authViewModel: AuthViewModel) {
     val user = mockUsers.find { it.id == userId }
+    // Estado para armazenar o nome do usuário
+    var userName by remember { mutableStateOf<String?>(null) }
+
+    // Buscar o nome do usuário assim que a tela for aberta
+    LaunchedEffect(Unit) {
+        authViewModel.getUserName { name ->
+            userName = name ?: "Usuário não encontrado"
+        }
+    }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -75,7 +90,8 @@ fun ProfileScreen(userId: String, onBackClick: () -> Unit) {
 
             ) {
                 Text(
-                    text = user?.name ?: "Usuário Desconhecido",
+                    //text = user?.name ?: "Usuário Desconhecido",
+                    text = userName ?: "Carregando...",
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.tertiary

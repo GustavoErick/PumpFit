@@ -357,7 +357,8 @@ fun MainScreen(isDarkTheme: Boolean, settingsDataStore: SettingsDataStore, authV
                             userId = "5", // ID de usuário no mock
                             onBackClick = {
                                 navController.popBackStack()
-                            }
+                            },
+                            authViewModel
                         )
                     }
                 } else {
@@ -365,7 +366,8 @@ fun MainScreen(isDarkTheme: Boolean, settingsDataStore: SettingsDataStore, authV
                         userId = "5", // ID de usuário no mock
                         onBackClick = {
                             navController.popBackStack()
-                        }
+                        },
+                        authViewModel
                     )
                 }
             }
