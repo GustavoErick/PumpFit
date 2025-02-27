@@ -4,7 +4,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitInstance {
-    private const val BASE_URL = "https://localhost:3000/" // Substitua pela URL da API
+    private const val BASE_URL = "https://musclegroupapi.onrender.com/"
 
     val api: MuscleApiService by lazy {
         Retrofit.Builder()
