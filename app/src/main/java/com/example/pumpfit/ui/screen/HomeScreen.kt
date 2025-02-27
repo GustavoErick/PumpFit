@@ -8,7 +8,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material3.Icon
+/*import androidx.compose.material.**/
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,14 +28,30 @@ import androidx.navigation.NavController
 import com.example.pumpfit.model.MuscleGroup
 import com.example.pumpfit.components.Menu
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
+import com.example.pumpfit.model.MuscleGroupApiResponse
 import com.example.pumpfit.model.data.AuthRepository
 import com.example.pumpfit.model.viewmodels.AuthViewModel
+import com.example.pumpfit.model.viewmodels.MuscleViewModel
 import kotlinx.coroutines.delay
 import java.util.Calendar
 import java.util.TimeZone
 
 @Composable
-fun HomeScreen(userId: String, navController: NavController, onMuscleGroupSelected: (String) -> Unit, authViewModel: AuthViewModel) {
+fun HomeScreen(userId: String, navController: NavController, onMuscleGroupSelected: (String) -> Unit, authViewModel: AuthViewModel, viewModel: MuscleViewModel = viewModel()) {
+    val muscleGroups by viewModel.muscleGroupsLiveData.observeAsState(emptyList())
+    val isLoading by viewModel.isLoadingLiveData.observeAsState(initial = true)
+
+    LaunchedEffect(Unit) {
+        viewModel.fetchMuscleGroups()
+    }
 
     val user = mockUsers.find { it.id == userId }
     val currentHour = remember {
@@ -50,17 +67,10 @@ fun HomeScreen(userId: String, navController: NavController, onMuscleGroupSelect
     }
 
     var searchQuery by remember { mutableStateOf("") }
-    var isLoading by remember { mutableStateOf(false) }
 
-    // Simula um atraso buscar os dados
-    LaunchedEffect(searchQuery) {
-        isLoading = true
-        delay(1000) // Atraso de 1 segundo
-        isLoading = false
-    }
-
-    val filteredMuscleGroups = remember(searchQuery) {
-        mockMuscleGroups.filter { it.name.contains(searchQuery, ignoreCase = true) }
+    // Filtra a lista baseada na busca aplicada sobre os dados da API
+    val filteredMuscleGroups = muscleGroups.filter {
+        it.name.contains(searchQuery, ignoreCase = true)
     }
 
     // Estado para armazenar o nome do usuário
@@ -114,11 +124,12 @@ fun HomeScreen(userId: String, navController: NavController, onMuscleGroupSelect
                 .fillMaxWidth()
                 .height(56.dp)
                 .clip(RoundedCornerShape(30.dp)), // Bordas arredondadas
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                backgroundColor = Color(0xFF626262),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = Color(0xFF626262),
+                unfocusedContainerColor = Color(0xFF626262),
                 focusedBorderColor = Color.Transparent,
                 unfocusedBorderColor = Color.Transparent,
-                textColor = Color(0xFFCFCFCF),
+                focusedTextColor = Color(0xFFCFCFCF),
                 cursorColor = Color(0xFFCFCFCF)
             ),
             leadingIcon = {
@@ -134,25 +145,23 @@ fun HomeScreen(userId: String, navController: NavController, onMuscleGroupSelect
 
         if (isLoading) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column (
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ){
-                    CircularProgressIndicator(
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                    Text(
-                        text = "Buscando...",
-                        color = MaterialTheme.colorScheme.tertiary,
-                        modifier = Modifier.padding(top = 8.dp)
-                    )
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        CircularProgressIndicator(
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                        Text(
+                            text = "Buscando...",
+                            color = MaterialTheme.colorScheme.tertiary,
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
+                    }
                 }
-            }
         }
 
         // LazyColumn para exibir os Cards
@@ -173,10 +182,17 @@ fun HomeScreen(userId: String, navController: NavController, onMuscleGroupSelect
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    items(filteredMuscleGroups) { muscleGroup ->
+                    /*items(filteredMuscleGroups) { muscleGroup ->
                         MuscleGroupCard(
                             muscleGroup = muscleGroup,
                             onClick = { onMuscleGroupSelected(muscleGroup.id) }
+                        )
+                    }*/
+
+                    items(filteredMuscleGroups) { group ->
+                        MuscleGroupCard(
+                            muscleGroup = group,
+                            onClick = { onMuscleGroupSelected(group.id) }
                         )
                     }
                 }
@@ -187,7 +203,7 @@ fun HomeScreen(userId: String, navController: NavController, onMuscleGroupSelect
 }
 
 @Composable
-fun MuscleGroupCard(muscleGroup: MuscleGroup, onClick: () -> Unit) {
+fun MuscleGroupCard(muscleGroup: MuscleGroupApiResponse, onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -196,11 +212,12 @@ fun MuscleGroupCard(muscleGroup: MuscleGroup, onClick: () -> Unit) {
             .background(Color.Gray)
             .clickable { onClick() } // Navega ao clicar no card
     ) {
-        Image(
-            painter = painterResource(id = muscleGroup.imageRes),
+        AsyncImage(
+            model = muscleGroup.imageRes, // URL vindo da API
             contentDescription = "Imagem de ${muscleGroup.name}",
             contentScale = ContentScale.Crop,
-            modifier = Modifier.clip(RoundedCornerShape(30.dp))
+            modifier = Modifier
+                .clip(RoundedCornerShape(30.dp))
                 .fillMaxSize()
         )
         Text(
