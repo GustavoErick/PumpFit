@@ -6,57 +6,103 @@ PumpFit é um aplicativo móvel desenvolvido com Jetpack Compose para ajudar os 
 
 ## 📋 Funcionalidades
 
-- **Tela Inicial:**
-  - Exibe os grupos musculares disponíveis.
-  - Permite a pesquisa por grupos musculares específicos.
-  - Acessa diferentes telas por meio de um menu de opções (três pontinhos).
-  
+- **Autenticação e Credenciamento:**
+  - Tela de Login, Cadastro e Recuperação de Senha.
+  - Login via e-mail e autenticação com conta Google.
+
+- **Tela Inicial – Lista de Grupos Musculares:**
+  - Exibição de grupos musculares disponíveis.
+  - Pesquisa por grupos específicos.
+  - Acesso às telas de exercícios por meio de um menu de opções (três pontinhos).
+
 - **Lista de Exercícios:**
-  - Mostra exercícios organizados por grupos musculares.
+  - Exibe exercícios organizados por grupos musculares.
   - Permite marcar/desmarcar exercícios como favoritos.
-  - Navega para a tela de detalhes do exercício.
+  - Navegação para detalhes do exercício.
 
 - **Detalhes do Exercício:**
-  - Exibe informações completas sobre o exercício, como carga, séries, intervalo e metodologia.
-  - Mostra as máquinas associadas ao exercício.
-  - Permite assistir a vídeos demonstrativos.
+  - Informações detalhadas (grupo muscular, carga, séries, intervalo, metodologia e máquinas utilizadas).
+  - Reprodução de vídeos demonstrativos.
+  - Temporizador com notificação para controle do tempo de intervalo.
+
+- **Menu e Navegação:**
+  - Acesso rápido às telas: Tela Inicial, Favoritos, Configurações, Perfil e Ajuda.
+  - Opção de logout.
 
 - **Favoritos:**
-  - Lista os exercícios marcados como favoritos.
-  - Opção para remover favoritos diretamente.
-
-- **Perfil:**
-  - Exibe as informações do usuário (nome, peso, altura e objetivo).
-  - Interface minimalista e organizada.
+  - Listagem de exercícios marcados como favoritos.
+  - Remoção de exercícios favoritos diretamente na tela.
 
 - **Configurações:**
-  - Botão para limpar todos os exercícios favoritos.
-  - Alternância entre temas Claro e Escuro.
+  - Limpeza de todos os exercícios favoritos.
+  - Alternância entre temas Claro e Escuro (incluindo uso do tema do sistema).
+  - Ativação/desativação de notificações e animações.
 
-- **Ajuda:**
-  - FAQ com perguntas frequentes sobre o uso do aplicativo.
+- **Perfil e Suporte:**
+  - Exibição das informações do usuário (nome, foto, peso, altura e objetivo).
+  - Seção de FAQ para suporte e dúvidas frequentes.
 
 ---
 
 ## 🛠️ Estrutura do Projeto
 
-O projeto é organizado de forma modular para facilitar a manutenção e futuras expansões.
+O projeto está organizado de maneira modular para facilitar a manutenção e futuras expansões:
 
-### **Principais Diretórios**
-- **`model`**: Modelos de dados (`Exercise`, `User`, `MuscleGroup`) e mocks (`MockExercises`, `MockMuscleGroups`, `MockUsers`) usados para simulações.
-- **`ui`**: Contém as telas (`HomeScreen`, `ExerciseListScreen`, etc.) e componentes reutilizáveis (`Menu`).
-- **`navigation`**: Gerencia o fluxo de navegação entre as telas.
-- **`components`**: Contém elementos reutilizáveis como a barra de navegação.
+- **components:**  
+  Componentes reutilizáveis como o menu de três pontinhos.
+
+- **data:**  
+  - **model:** Classes de modelo (ex.: `User`, `Exercise`, `MuscleGroup`) e repositórios/gerenciadores de dados.  
+  - **mock:** Dados estáticos para testes e prototipagem (ex.: `MockExercises`, `MockUsers`).
+
+- **viewmodels:**  
+  Classes responsáveis pelo gerenciamento do estado e lógica de negócios da interface.
+
+- **navigation:**  
+  Gerenciamento das rotas e fluxo de navegação entre as telas (definido em `MainScreen.kt`).
+
+- **network:**  
+  Configuração de chamadas de rede e serviços (ex.: `RetrofitInstance` e `MuscleApiService`).
+
+- **services:**  
+  Serviços como o `TimerReceiver` para notificações e alarmes.
+
+- **ui:**  
+  - **screen:** Telas do aplicativo (ex.: `HomeScreen`, `ExerciseListScreen`, `DetailsScreen`, etc.).  
+  - **theme:** Gerenciamento de temas, cores e estilos (ex.: `Color.kt`, `Theme.kt`).
+
+- **util:**  
+  Classes utilitárias, como `NotificationUtils` para o gerenciamento de notificações.
+
+- **MainActivity.kt:**  
+  Ponto de entrada da aplicação.
+
+---
+
+## 🧬 Evolução do Projeto
+
+O desenvolvimento do PumpFit foi realizado em etapas, conforme as entregas dos trabalhos práticos e do trabalho final:
+
+- **Versão 1.0 (08/01/2025):**  
+  Funcionalidades F1 a F7 – Desenvolvimento inicial e criação das telas básicas.
+
+- **Versão 2.0 (26/01/2025):**  
+  Funcionalidades F9 a F12 – Incremento de novas funcionalidades e melhorias na interface.
+
+- **Versão 3.0 (26/02/2025):**  
+  Funcionalidades F14 a F17 – Versão final com integração de serviços, autenticação, persistência de dados e ajustes de usabilidade.
 
 ---
 
 ## 🧩 Tecnologias Utilizadas
 
-- **Kotlin**: Linguagem principal do projeto.
-- **Jetpack Compose**: Framework para construção da interface do usuário.
-- **Navigation Compose**: Gerenciamento de navegação.
-- **Material3**: Design system baseado no Material Design.
-- **VideoView**: Reproduz vídeos na tela de detalhes.
+- **Kotlin**
+- **Jetpack Compose**
+- **Navigation Compose**
+- **Material3**
+- **VideoView** (para reprodução de vídeos)
+- **Firebase Authentication** (para autenticação de usuários)
+- **Retrofit** (para integração com API REST)
 
 ---
 
@@ -71,16 +117,14 @@ O projeto é organizado de forma modular para facilitar a manutenção e futuras
 
 ---
 
-## 📂 Estrutura de Navegação
-O fluxo do aplicativo segue um esquema claro e organizado:
-
-- **HomeScreen**: Tela inicial -> Navega para a lista de exercícios.
-- **ExerciseListScreen**: Lista de exercícios -> Navega para os detalhes do exercício.
-- **ExerciseDetailsScreen**: Detalhes do exercício.
-- **Favoritos, Configurações, Perfil e Ajuda**: Acessados via menu de opções ou barra de navegação.
-
----
-
 ## 👥 Colaboradores
 **Gustavo Erick**: [LinkedIn](https://www.linkedin.com/in/gustavo-erick-806778313/) | [GitHub](https://github.com/GustavoErick)  
 **Venicius Feitosa**: [GitHub](https://github.com/FeitosaVeni)
+
+---
+
+## ⚖️ Licença
+
+Este projeto está licenciado sob a [MIT License](LICENSE).
+
+PumpFit © 2025 - Universidade Federal do Ceará, Campus Quixadá
