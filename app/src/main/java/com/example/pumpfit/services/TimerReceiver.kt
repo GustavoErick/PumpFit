@@ -11,7 +11,6 @@ import com.example.pumpfit.util.createNotificationChannel
 class TimerReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         context?.let {
-            // Cria o canal de notificações caso ainda não exista
             createNotificationChannel(it)
 
             val notificationManager =
@@ -22,7 +21,7 @@ class TimerReceiver : BroadcastReceiver() {
                 .setContentTitle("PumpFit")
                 .setContentText("Intervalo finalizado! Hora de iniciar a próxima série.")
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setAutoCancel(true) // Cancela automaticamente ao clicar
+                .setAutoCancel(true)
                 .build()
 
             notificationManager.notify(System.currentTimeMillis().toInt(), notification)

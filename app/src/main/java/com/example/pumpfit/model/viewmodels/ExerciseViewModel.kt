@@ -17,7 +17,6 @@ class ExerciseViewModel : ViewModel() {
     fun startTimer(initialTime: Long) {
         _timeRemaining.value = initialTime
 
-        // Cancel any existing job before starting a new one
         timerJob?.cancel()
         timerJob = viewModelScope.launch {
             while (_timeRemaining.value > 0) {

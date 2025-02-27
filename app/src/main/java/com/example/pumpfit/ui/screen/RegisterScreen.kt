@@ -40,7 +40,7 @@ fun RegisterScreen(
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
-        isVisible = true // Ativa animação ao entrar na tela
+        isVisible = true
     }
 
     AnimatedVisibility(
@@ -50,7 +50,7 @@ fun RegisterScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background) // Cor de fundo
+                .background(MaterialTheme.colorScheme.background)
                 .padding(16.dp),
             contentAlignment = Alignment.Center
         ) {
@@ -107,15 +107,12 @@ fun RegisterScreen(
                                     settingsDataStore.setUserLoggedIn(true)
                                 }
 
-                                // Exibir mensagem de sucesso
                                 Toast.makeText(context, message ?: "Conta criada com sucesso!", Toast.LENGTH_LONG).show()
 
-                                // Redirecionar para Home
                                 navController.navigate("home") {
                                     popUpTo("register") { inclusive = true }
                                 }
                             } else {
-                                // Exibir mensagem de erro
                                 Toast.makeText(context, message ?: "Erro ao cadastrar", Toast.LENGTH_LONG).show()
                             }
                         }
@@ -123,7 +120,7 @@ fun RegisterScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(50.dp),
-                    shape = RoundedCornerShape(30.dp), // Mantendo o estilo arredondado
+                    shape = RoundedCornerShape(30.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                 ) {
                     Text("Registrar", fontSize = 18.sp, color = MaterialTheme.colorScheme.onBackground)

@@ -39,7 +39,7 @@ fun ForgotPasswordScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background) // Cor de fundo
+                .background(MaterialTheme.colorScheme.background)
                 .padding(16.dp),
             contentAlignment = Alignment.Center
         ) {
@@ -64,7 +64,6 @@ fun ForgotPasswordScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Campo de Email
                 OutlinedTextField(
                     value = email,
                     onValueChange = {
@@ -75,7 +74,7 @@ fun ForgotPasswordScreen(
                     isError = !isEmailValid,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clip(RoundedCornerShape(30.dp)), // Bordas arredondadas
+                        .clip(RoundedCornerShape(30.dp)),
                     shape = RoundedCornerShape(30.dp),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = if (isEmailValid) MaterialTheme.colorScheme.primary else Color.Red,
@@ -96,8 +95,6 @@ fun ForgotPasswordScreen(
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
-
-                // Botão de Recuperação
                 Button(
                     onClick = {
                         if (isEmailValid && email.isNotEmpty()) {
@@ -118,7 +115,7 @@ fun ForgotPasswordScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(50.dp),
-                    shape = RoundedCornerShape(30.dp), // Mantendo o estilo arredondado
+                    shape = RoundedCornerShape(30.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                 ) {
                     Text("Enviar Email de Recuperação", fontSize = 16.sp, color = MaterialTheme.colorScheme.onBackground)
@@ -126,7 +123,6 @@ fun ForgotPasswordScreen(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Botão para Voltar ao Login
                 TextButton(
                     onClick = { navController.navigate("login") },
                     modifier = Modifier.padding(top = 16.dp)

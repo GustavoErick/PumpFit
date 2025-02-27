@@ -7,7 +7,6 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.*
 import com.example.pumpfit.model.data.AuthRepository
 import com.example.pumpfit.model.datastore.SettingsDataStore
 import com.example.pumpfit.model.viewmodels.AuthViewModel
@@ -37,9 +36,9 @@ fun PumpFitApp(
     settingsDataStore: SettingsDataStore,
     authViewModel: AuthViewModel
 ) {
-    val userPreference by settingsDataStore.isDarkTheme.collectAsState(initial = null) // Pode ser null se não tiver preferência salva
-    val useDeviceTheme by settingsDataStore.useDeviceTheme.collectAsState(initial = true) // Padrão: usar o tema do dispositivo
-    val systemTheme = isSystemInDarkTheme() // Verifica o tema do sistema
+    val userPreference by settingsDataStore.isDarkTheme.collectAsState(initial = null)
+    val useDeviceTheme by settingsDataStore.useDeviceTheme.collectAsState(initial = true)
+    val systemTheme = isSystemInDarkTheme()
     val isDarkTheme = if (useDeviceTheme) systemTheme else userPreference ?: false
 
     PumpFitTheme(darkTheme = isDarkTheme) {

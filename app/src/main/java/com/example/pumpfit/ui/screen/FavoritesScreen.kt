@@ -58,9 +58,9 @@ import kotlinx.coroutines.runBlocking
 @Composable
 fun FavoritesScreen(
     favoriteExercises: List<Exercise>,
-    onExerciseClick: (String) -> Unit, // Navega para detalhes do exercício
-    onFavoriteClick: (Exercise) -> Unit, // Callback para desfavoritar
-    onBackClick: () -> Unit, // Callback para voltar
+    onExerciseClick: (String) -> Unit,
+    onFavoriteClick: (Exercise) -> Unit,
+    onBackClick: () -> Unit,
     viewModel: ExerciseViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
 
@@ -71,9 +71,9 @@ fun FavoritesScreen(
     val animationsEnabled = runBlocking { settingsDataStore.visualAnimations.first() }
     var isLoading by remember { mutableStateOf(true) }
 
-    // Simula um atraso buscar os dados
+
     LaunchedEffect(Unit) {
-        delay(1000) // Atraso de 1 segundo
+        delay(1000)
         isLoading = false
     }
 
@@ -84,15 +84,15 @@ fun FavoritesScreen(
                     Text(
                         text = "Favoritos",
                         color = MaterialTheme.colorScheme.tertiary,
-                        fontSize = 20.sp // Tamanho ajustado para maior consistência com o restante do app
+                        fontSize = 20.sp
                     )
                 },
                 backgroundColor = MaterialTheme.colorScheme.onBackground,
                 contentColor = MaterialTheme.colorScheme.tertiary,
-                navigationIcon = { // Ícone de voltar
+                navigationIcon = {
                     IconButton(onClick = { onBackClick() }) {
                         Icon(
-                            painter = painterResource(id = R.drawable.ic_back), // Use o recurso correto
+                            painter = painterResource(id = R.drawable.ic_back),
                             contentDescription = "Voltar",
                             tint = MaterialTheme.colorScheme.tertiary
                         )
@@ -133,23 +133,21 @@ fun FavoritesScreen(
                                     visible = isVisible,
                                     enter = fadeIn() + slideInVertically(),
                                     exit = fadeOut() + slideOutHorizontally(
-                                        targetOffsetX = { -it } // Desloca o card para a esquerda
+                                        targetOffsetX = { -it }
                                     ),
                                 ) {
                                     ExerciseCardComposableCLick(
                                         exercise = exercise,
                                         isFavorite = true,
                                         onFavoriteClick = {
-                                            // Define como invisível antes de remover o item
                                             isVisible = false
-                                            /*onFavoriteClick(exercise)*/
                                         },
                                         onClick = { onExerciseClick(exercise.id) },
                                     )
                                 }
                                 if (!isVisible) {
                                     LaunchedEffect(Unit) {
-                                        kotlinx.coroutines.delay(300) // Tempo da animação
+                                        kotlinx.coroutines.delay(300)
                                         initialFavoriteExercises = initialFavoriteExercises.filter { it.id != exercise.id }
                                         onFavoriteClick(exercise)
                                     }
@@ -199,25 +197,24 @@ fun FavoritesScreen(
 fun ExerciseCardComposableCLick(
     exercise: Exercise,
     isFavorite: Boolean,
-    onFavoriteClick: (Exercise) -> Unit, // Callback para clicar no favorito
-    onClick: () -> Unit // Callback para clicar no card
+    onFavoriteClick: (Exercise) -> Unit,
+    onClick: () -> Unit
 ) {
-    var isAnimating by remember { mutableStateOf(false) } // Estado para controlar a animação
+    var isAnimating by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
     val settingsDataStore = SettingsDataStore(context)
     val animationsEnabled = runBlocking { settingsDataStore.visualAnimations.first() }
 
-    // Animação de escala para o ícone
     val scale by animateFloatAsState(
         targetValue = if (isAnimating) 2f else 1f,
         animationSpec = androidx.compose.animation.core.tween(durationMillis = 150),
-        finishedListener = { isAnimating = false } // Reseta após a animação
+        finishedListener = { isAnimating = false }
     )
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick), // Clique no card navega para detalhes
+            .clickable(onClick = onClick),
         shape = RoundedCornerShape(16.dp),
         backgroundColor = Color(0xFF626262),
         elevation = 4.dp
@@ -226,16 +223,15 @@ fun ExerciseCardComposableCLick(
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Imagem no formato crop com bordas arredondadas
             Box(
                 modifier = Modifier
                     .size(60.dp)
-                    .clip(RoundedCornerShape(12.dp)) // Borda arredondada
+                    .clip(RoundedCornerShape(12.dp))
             ) {
                 Image(
                     painter = painterResource(id = exercise.image),
                     contentDescription = null,
-                    contentScale = ContentScale.Crop, // Crop da imagem
+                    contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize()
                 )
             }
@@ -263,7 +259,7 @@ fun ExerciseCardComposableCLick(
                         painter = if (isFavorite) painterResource(R.drawable.ic_favorite) else painterResource(R.drawable.ic_favorite_border),
                         contentDescription = "Favorite",
                         tint = if (isFavorite) Color.Red else Color(0xFFCFCFCF),
-                        modifier = Modifier.scale(scale) // Aplica a escala ao ícone
+                        modifier = Modifier.scale(scale)
                     )
                 }else {
                     Icon(

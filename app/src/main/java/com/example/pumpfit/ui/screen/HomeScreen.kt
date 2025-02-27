@@ -1,6 +1,5 @@
 package com.example.pumpfit.ui.screen
 
-import androidx.compose.foundation.Image
 import com.example.pumpfit.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -9,14 +8,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
-/*import androidx.compose.material.**/
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.example.pumpfit.model.mock.mockMuscleGroups
 import com.example.pumpfit.model.mock.mockUsers
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -25,22 +22,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.pumpfit.model.MuscleGroup
 import com.example.pumpfit.components.Menu
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.pumpfit.model.MuscleGroupApiResponse
-import com.example.pumpfit.model.data.AuthRepository
 import com.example.pumpfit.model.viewmodels.AuthViewModel
 import com.example.pumpfit.model.viewmodels.MuscleViewModel
-import kotlinx.coroutines.delay
 import java.util.Calendar
 import java.util.TimeZone
 
@@ -68,15 +61,12 @@ fun HomeScreen(userId: String, navController: NavController, onMuscleGroupSelect
 
     var searchQuery by remember { mutableStateOf("") }
 
-    // Filtra a lista baseada na busca aplicada sobre os dados da API
     val filteredMuscleGroups = muscleGroups.filter {
         it.name.contains(searchQuery, ignoreCase = true)
     }
 
-    // Estado para armazenar o nome do usuário
     var userName by remember { mutableStateOf<String?>(null) }
 
-    // Buscar o nome do usuário assim que a tela for aberta
     LaunchedEffect(Unit) {
         authViewModel.getUserName { name ->
             userName = name ?: "Usuário não encontrado"
@@ -86,10 +76,9 @@ fun HomeScreen(userId: String, navController: NavController, onMuscleGroupSelect
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background( MaterialTheme.colorScheme.background) // Cor de fundo da tela
+            .background( MaterialTheme.colorScheme.background)
             .padding(16.dp)
     ) {
-        // Top Bar
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -100,13 +89,12 @@ fun HomeScreen(userId: String, navController: NavController, onMuscleGroupSelect
             Column {
                 Text(
                     text = greetingMessage,
-                    color = MaterialTheme.colorScheme.tertiary, // Cor do texto
+                    color = MaterialTheme.colorScheme.tertiary,
                     style = MaterialTheme.typography.titleMedium
                 )
                 Text(
-//                    text = user?.name ?: "Usuário não encontrado",
                     text = userName ?: "Carregando...",
-                    color = MaterialTheme.colorScheme.tertiary, // Cor do texto
+                    color = MaterialTheme.colorScheme.tertiary,
                     style = MaterialTheme.typography.headlineSmall
                 )
             }
@@ -115,7 +103,6 @@ fun HomeScreen(userId: String, navController: NavController, onMuscleGroupSelect
 
         }
 
-        // Barra de Pesquisa
         OutlinedTextField(
             value = searchQuery,
             onValueChange = { searchQuery = it },
@@ -123,7 +110,7 @@ fun HomeScreen(userId: String, navController: NavController, onMuscleGroupSelect
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp)
-                .clip(RoundedCornerShape(30.dp)), // Bordas arredondadas
+                .clip(RoundedCornerShape(30.dp)),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedContainerColor = Color(0xFF626262),
                 unfocusedContainerColor = Color(0xFF626262),
@@ -164,7 +151,6 @@ fun HomeScreen(userId: String, navController: NavController, onMuscleGroupSelect
                 }
         }
 
-        // LazyColumn para exibir os Cards
         if (!isLoading){
             if (filteredMuscleGroups.isEmpty()) {
                 Box(
@@ -182,13 +168,6 @@ fun HomeScreen(userId: String, navController: NavController, onMuscleGroupSelect
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    /*items(filteredMuscleGroups) { muscleGroup ->
-                        MuscleGroupCard(
-                            muscleGroup = muscleGroup,
-                            onClick = { onMuscleGroupSelected(muscleGroup.id) }
-                        )
-                    }*/
-
                     items(filteredMuscleGroups) { group ->
                         MuscleGroupCard(
                             muscleGroup = group,
@@ -210,10 +189,10 @@ fun MuscleGroupCard(muscleGroup: MuscleGroupApiResponse, onClick: () -> Unit) {
             .height(150.dp)
             .clip(RoundedCornerShape(30.dp))
             .background(Color.Gray)
-            .clickable { onClick() } // Navega ao clicar no card
+            .clickable { onClick() }
     ) {
         AsyncImage(
-            model = muscleGroup.imageRes, // URL vindo da API
+            model = muscleGroup.imageRes,
             contentDescription = "Imagem de ${muscleGroup.name}",
             contentScale = ContentScale.Crop,
             modifier = Modifier

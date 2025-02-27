@@ -26,9 +26,7 @@ fun startTimer(context: Context, durationMillis: Long) {
 
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-        // Verifica permissões de alarme exato em Android 12+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
-            // Redireciona para a tela de permissões
             val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
             }
@@ -36,7 +34,6 @@ fun startTimer(context: Context, durationMillis: Long) {
             return
         }
 
-        // Configura o intent para o TimerReceiver
         val intent = Intent(context, TimerReceiver::class.java).apply {
             action = "TIMER_ACTION"
         }
@@ -60,7 +57,6 @@ fun startTimer(context: Context, durationMillis: Long) {
     }
 }
 
-// Cria o canal de notificações
 fun createNotificationChannel(context: Context) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         val channel = NotificationChannel(

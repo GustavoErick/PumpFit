@@ -68,13 +68,11 @@ fun MainScreen(isDarkTheme: Boolean, settingsDataStore: SettingsDataStore, authV
     val showBottomBar = currentRoute !in listOf("login", "register", "forgotPassword")
 
     Scaffold(
-        //bottomBar = { BottomNavigationBar(navController = navController) },
         bottomBar = { if (showBottomBar) BottomNavigationBar(navController) },
         snackbarHost = { SnackbarHost(hostState = snackBarHostState) }
     ) { innerPadding ->
         NavHost(
             navController = navController,
-//            startDestination = "home",
             startDestination = if (authViewModel.isUserLogged.collectAsState(initial = false).value) "home" else "login",
             modifier = Modifier.padding(innerPadding)
         ) {
@@ -82,12 +80,12 @@ fun MainScreen(isDarkTheme: Boolean, settingsDataStore: SettingsDataStore, authV
                 if(animationsEnabled){
                     var isVisible by remember { mutableStateOf(false) }
                     LaunchedEffect(Unit) {
-                        isVisible = true // Torna a tela visível
+                        isVisible = true
                     }
 
                     AnimatedVisibility(
                         visible = isVisible,
-                        enter = fadeIn() + slideInHorizontally(initialOffsetX = { 1000 }), // Animação de entrada
+                        enter = fadeIn() + slideInHorizontally(initialOffsetX = { 1000 }),
                     ){
                         LoginScreen(
                             viewModel = authViewModel,
@@ -108,12 +106,12 @@ fun MainScreen(isDarkTheme: Boolean, settingsDataStore: SettingsDataStore, authV
                 if(animationsEnabled){
                     var isVisible by remember { mutableStateOf(false) }
                     LaunchedEffect(Unit) {
-                        isVisible = true // Torna a tela visível
+                        isVisible = true
                     }
 
                     AnimatedVisibility(
                         visible = isVisible,
-                        enter = fadeIn() + slideInHorizontally(initialOffsetX = { 1000 }), // Animação de entrada
+                        enter = fadeIn() + slideInHorizontally(initialOffsetX = { 1000 }),
                     ){
                         RegisterScreen(
                             viewModel = authViewModel,
@@ -134,12 +132,12 @@ fun MainScreen(isDarkTheme: Boolean, settingsDataStore: SettingsDataStore, authV
                 if(animationsEnabled){
                     var isVisible by remember { mutableStateOf(false) }
                     LaunchedEffect(Unit) {
-                        isVisible = true // Torna a tela visível
+                        isVisible = true
                     }
 
                     AnimatedVisibility(
                         visible = isVisible,
-                        enter = fadeIn() + slideInHorizontally(initialOffsetX = { 1000 }), // Animação de entrada
+                        enter = fadeIn() + slideInHorizontally(initialOffsetX = { 1000 }),
                     ){
                         ForgotPasswordScreen(
                             viewModel = authViewModel,
@@ -159,15 +157,15 @@ fun MainScreen(isDarkTheme: Boolean, settingsDataStore: SettingsDataStore, authV
                 if(animationsEnabled){
                     var isVisible by remember { mutableStateOf(false) }
                     LaunchedEffect(Unit) {
-                        isVisible = true // Torna a tela visível
+                        isVisible = true
                     }
 
                     AnimatedVisibility(
                         visible = isVisible,
-                        enter = fadeIn() + slideInHorizontally(initialOffsetX = { 1000 }), // Animação de entrada
+                        enter = fadeIn() + slideInHorizontally(initialOffsetX = { 1000 }),
                     ){
                         HomeScreen(
-                            userId = "5", // ID de usuário no mock
+                            userId = "5",
                             navController = navController,
                             onMuscleGroupSelected = { muscleGroupId ->
                                 navController.navigate("exerciseList/$muscleGroupId")
@@ -191,69 +189,64 @@ fun MainScreen(isDarkTheme: Boolean, settingsDataStore: SettingsDataStore, authV
                 val muscleGroupId = backStackEntry.arguments?.getString("muscleGroupId") ?: ""
                 val muscleGroup = mockMuscleGroups.find { it.id == muscleGroupId }
 
-                // Lista de exercícios filtrados pelo grupo muscular
                 val exercises = mockExercises.filter { it.muscleGroup == muscleGroup?.name }
 
                 if(animationsEnabled){
                     var isVisible by remember { mutableStateOf(false) }
                     LaunchedEffect(Unit) {
-                        isVisible = true // Torna a tela visível
+                        isVisible = true
                     }
 
                     AnimatedVisibility(
                         visible = isVisible,
-                        enter = fadeIn() + slideInHorizontally(initialOffsetX = { 1000 }), // Animação de entrada
+                        enter = fadeIn() + slideInHorizontally(initialOffsetX = { 1000 }),
                     ){
                         ExerciseListScreen(
                             muscleGroup = muscleGroup?.name ?: "Desconhecido",
                             exercises = exercises,
-                            favoriteExercises = favoriteExercises, // Passa a lista de favoritos
+                            favoriteExercises = favoriteExercises,
                             onExerciseClick = { exerciseId ->
-                                navController.navigate("exerciseDetails/$exerciseId") // Navega para a tela de detalhes do exercício
+                                navController.navigate("exerciseDetails/$exerciseId")
                             },
                             onFavoriteClick = { exercise ->
                                 if (favoriteExercises.contains(exercise)) {
-                                    favoriteExercises.remove(exercise) // Remove dos favoritos
-                                    // logica usando o settingsDataStore
+                                    favoriteExercises.remove(exercise)
                                     coroutineScope.launch {
                                         settingsDataStore.removeFavorite(exercise.id)
                                     }
                                 } else {
-                                    favoriteExercises.add(exercise) // Adiciona aos favoritos
-                                    // logica usando o settingsDataStore
+                                    favoriteExercises.add(exercise)
                                     coroutineScope.launch {
                                         settingsDataStore.addFavorite(exercise.id)
                                     }
                                 }
 
                             },
-                            onBackClick = { navController.popBackStack() } // Volta para a tela anterior
+                            onBackClick = { navController.popBackStack() }
                         )
                     }
                 } else {
                     ExerciseListScreen(
                         muscleGroup = muscleGroup?.name ?: "Desconhecido",
                         exercises = exercises,
-                        favoriteExercises = favoriteExercises, // Passa a lista de favoritos
+                        favoriteExercises = favoriteExercises,
                         onExerciseClick = { exerciseId ->
-                            navController.navigate("exerciseDetails/$exerciseId") // Navega para a tela de detalhes do exercício
+                            navController.navigate("exerciseDetails/$exerciseId")
                         },
                         onFavoriteClick = { exercise ->
                             if (favoriteExercises.contains(exercise)) {
-                                favoriteExercises.remove(exercise) // Remove dos favoritos
-                                // logica usando o settingsDataStore
+                                favoriteExercises.remove(exercise)
                                 coroutineScope.launch {
                                     settingsDataStore.removeFavorite(exercise.id)
                                 }
                             } else {
-                                favoriteExercises.add(exercise) // Adiciona aos favoritos
-                                // logica usando o settingsDataStore
+                                favoriteExercises.add(exercise)
                                 coroutineScope.launch {
                                     settingsDataStore.addFavorite(exercise.id)
                                 }
                             }
                         },
-                        onBackClick = { navController.popBackStack() } // Volta para a tela anterior
+                        onBackClick = { navController.popBackStack() }
                     )
                 }
 
@@ -268,12 +261,12 @@ fun MainScreen(isDarkTheme: Boolean, settingsDataStore: SettingsDataStore, authV
                 if(animationsEnabled){
                     var isVisible by remember { mutableStateOf(false) }
                     LaunchedEffect(Unit) {
-                        isVisible = true // Torna a tela visível
+                        isVisible = true
                     }
 
                     AnimatedVisibility(
                         visible = isVisible,
-                        enter = fadeIn() + slideInHorizontally(initialOffsetX = { 1000 }), // Animação de entrada
+                        enter = fadeIn() + slideInHorizontally(initialOffsetX = { 1000 }),
                     ){
                         exercise?.let {
                             ExerciseDetailsScreen(
@@ -301,12 +294,12 @@ fun MainScreen(isDarkTheme: Boolean, settingsDataStore: SettingsDataStore, authV
                 if(animationsEnabled){
                     var isVisible by remember { mutableStateOf(false) }
                     LaunchedEffect(Unit) {
-                        isVisible = true // Torna a tela visível
+                        isVisible = true
                     }
 
                     AnimatedVisibility(
                         visible = isVisible,
-                        enter = fadeIn() + slideInHorizontally(initialOffsetX = { 1000 }), // Animação de entrada
+                        enter = fadeIn() + slideInHorizontally(initialOffsetX = { 1000 }),
                     ){
                         FavoritesScreen(
                             favoriteExercises = favoriteExercises,
@@ -346,15 +339,15 @@ fun MainScreen(isDarkTheme: Boolean, settingsDataStore: SettingsDataStore, authV
                 if(animationsEnabled){
                     var isVisible by remember { mutableStateOf(false) }
                     LaunchedEffect(Unit) {
-                        isVisible = true // Torna a tela visível
+                        isVisible = true
                     }
 
                     AnimatedVisibility(
                         visible = isVisible,
-                        enter = fadeIn() + slideInHorizontally(initialOffsetX = { 1000 }), // Animação de entrada
+                        enter = fadeIn() + slideInHorizontally(initialOffsetX = { 1000 }),
                     ){
                         ProfileScreen(
-                            userId = "5", // ID de usuário no mock
+                            userId = "5",
                             onBackClick = {
                                 navController.popBackStack()
                             },
@@ -363,7 +356,7 @@ fun MainScreen(isDarkTheme: Boolean, settingsDataStore: SettingsDataStore, authV
                     }
                 } else {
                     ProfileScreen(
-                        userId = "5", // ID de usuário no mock
+                        userId = "5",
                         onBackClick = {
                             navController.popBackStack()
                         },
@@ -380,12 +373,12 @@ fun MainScreen(isDarkTheme: Boolean, settingsDataStore: SettingsDataStore, authV
                 if(animationsEnabled){
                     var isVisible by remember { mutableStateOf(false) }
                     LaunchedEffect(Unit) {
-                        isVisible = true // Torna a tela visível
+                        isVisible = true
                     }
 
                     AnimatedVisibility(
                         visible = isVisible,
-                        enter = fadeIn() + slideInHorizontally(initialOffsetX = { 1000 }), // Animação de entrada
+                        enter = fadeIn() + slideInHorizontally(initialOffsetX = { 1000 }),
                     ){
                         ConfigScreen(
                             onBackClick = { navController.popBackStack() },
@@ -421,12 +414,12 @@ fun MainScreen(isDarkTheme: Boolean, settingsDataStore: SettingsDataStore, authV
                 if(animationsEnabled){
                     var isVisible by remember { mutableStateOf(false) }
                     LaunchedEffect(Unit) {
-                        isVisible = true // Torna a tela visível
+                        isVisible = true
                     }
 
                     AnimatedVisibility(
                         visible = isVisible,
-                        enter = fadeIn() + slideInHorizontally(initialOffsetX = { 1000 }), // Animação de entrada
+                        enter = fadeIn() + slideInHorizontally(initialOffsetX = { 1000 }),
                     ){
                         HelpScreen(onBackClick = { navController.popBackStack() })
                     }

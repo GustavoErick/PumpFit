@@ -4,7 +4,6 @@ import com.example.pumpfit.R
 import com.example.pumpfit.model.Exercise
 
 val mockExercises = listOf(
-    // Exercícios para Braço
     Exercise(
         id = "1",
         name = "Rosca Direta",
@@ -13,7 +12,6 @@ val mockExercises = listOf(
         weight = "30kg",
         sets = "3x15-12-10",
         methodology = "Tensional/Corda",
-        //interval = "01:55",
         interval = "00:05",
         image = R.drawable.rosca_direta_image,
         video = R.raw.rosca_direta_video,
@@ -45,8 +43,6 @@ val mockExercises = listOf(
         video = R.raw.rosca_direta_video,
         machines = listOf("Halteres", "Banco Ajustável")
     ),
-
-    // Exercícios para Peito
     Exercise(
         id = "4",
         name = "Supino Reto",
@@ -86,8 +82,6 @@ val mockExercises = listOf(
         video = R.raw.supino_reto_video,
         machines = listOf("Crossover", "Polia")
     ),
-
-    // Exercícios para Ombro
     Exercise(
         id = "7",
         name = "Elevação Lateral",
@@ -127,8 +121,6 @@ val mockExercises = listOf(
         video = R.raw.elevacao_frontal_video,
         machines = listOf("Halteres", "Polia Baixa")
     ),
-
-    // Exercícios para Perna
     Exercise(
         id = "10",
         name = "Agachamento Livre",
@@ -168,8 +160,6 @@ val mockExercises = listOf(
         video = R.raw.leg_press_video,
         machines = listOf("Cadeira Extensora")
     ),
-
-    // Exercícios para Costas
     Exercise(
         id = "13",
         name = "Remada Curvada",
@@ -209,8 +199,6 @@ val mockExercises = listOf(
         video = R.raw.remada_curvada_video,
         machines = listOf("Barra Olímpica")
     ),
-
-    // Exercícios para Abdômen
     Exercise(
         id = "16",
         name = "Abdominal Reto",

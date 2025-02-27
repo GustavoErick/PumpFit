@@ -84,7 +84,6 @@ fun ConfigScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Checkbox para usar o tema do sistema
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
@@ -110,7 +109,6 @@ fun ConfigScreen(
                 )
             }
 
-            // Switch para alternar o tema
             if (!useDeviceTheme) {
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -144,7 +142,6 @@ fun ConfigScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Switch para desativar ou ativar as notificações
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
@@ -174,7 +171,6 @@ fun ConfigScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Switch para desativar ou ativar os efeitos visuais
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()

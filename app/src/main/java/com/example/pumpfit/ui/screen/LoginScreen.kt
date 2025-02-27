@@ -80,7 +80,7 @@ fun LoginScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background) // Cor de fundo
+                .background(MaterialTheme.colorScheme.background)
                 .padding(16.dp),
             contentAlignment = Alignment.Center
         ) {
@@ -139,7 +139,7 @@ fun LoginScreen(
                         }
                     },
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(30.dp), // Mantendo o estilo arredondado
+                    shape = RoundedCornerShape(30.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                 ) {
                     Text("Entrar", fontSize = 18.sp, color = MaterialTheme.colorScheme.onBackground)
@@ -196,7 +196,7 @@ fun CustomTextField(
         visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(30.dp)), // Bordas arredondadas igual ao HomeScreen
+            .clip(RoundedCornerShape(30.dp)),
         shape = RoundedCornerShape(30.dp),
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = MaterialTheme.colorScheme.primary,

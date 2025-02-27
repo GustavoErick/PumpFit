@@ -9,5 +9,5 @@ data class User(
     val password: String,
     val weight: Double,
     val height: Double,
-    val period: String // e.g., "cutting", "bulking", or "maintenance"
+    val period: String
 )

@@ -39,17 +39,16 @@ import kotlinx.coroutines.runBlocking
 fun ExerciseListScreen(
     muscleGroup: String,
     exercises: List<Exercise>,
-    favoriteExercises: List<Exercise>, // Lista de exercícios favoritos
-    onExerciseClick: (String) -> Unit, // Callback para clicar no exercício
-    onFavoriteClick: (Exercise) -> Unit, // Callback para adicionar/remover favoritos
-    onBackClick: () -> Unit // Callback para o botão de voltar
+    favoriteExercises: List<Exercise>,
+    onExerciseClick: (String) -> Unit,
+    onFavoriteClick: (Exercise) -> Unit,
+    onBackClick: () -> Unit
 ) {
     var isLoading by remember { mutableStateOf(true) }
 
 
-    // Simula um atraso buscar os dados
     LaunchedEffect(Unit) {
-        delay(1000) // Atraso de 1 segundo
+        delay(1000)
         isLoading = false
     }
 
@@ -110,9 +109,9 @@ fun ExerciseListScreen(
                     items(exercises) { exercise ->
                         ExerciseCard(
                             exercise = exercise,
-                            isFavorite = favoriteExercises.contains(exercise), // Verifica se está favoritado
-                            onFavoriteClick = { onFavoriteClick(exercise) }, // Callback para favoritar/desfavoritar
-                            onClick = { onExerciseClick(exercise.id) } // Navegação pelo ID do exercício
+                            isFavorite = favoriteExercises.contains(exercise),
+                            onFavoriteClick = { onFavoriteClick(exercise) },
+                            onClick = { onExerciseClick(exercise.id) }
                         )
                     }
                 }
@@ -126,25 +125,24 @@ fun ExerciseListScreen(
 fun ExerciseCard(
     exercise: Exercise,
     isFavorite: Boolean,
-    onFavoriteClick: (Exercise) -> Unit, // Callback para clicar no favorito
-    onClick: () -> Unit // Callback para clicar no card
+    onFavoriteClick: (Exercise) -> Unit,
+    onClick: () -> Unit
 ) {
-    var isAnimating by remember { mutableStateOf(false) } // Estado para controlar a animação
+    var isAnimating by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
     val settingsDataStore = SettingsDataStore(context)
     val animationsEnabled = runBlocking { settingsDataStore.visualAnimations.first() }
 
-    // Animação de escala para o ícone
     val scale by animateFloatAsState(
         targetValue = if (isAnimating) 2f else 1f,
         animationSpec = androidx.compose.animation.core.tween(durationMillis = 150),
-        finishedListener = { isAnimating = false } // Reseta após a animação
+        finishedListener = { isAnimating = false }
     )
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick), // Clique no card navega para detalhes
+            .clickable(onClick = onClick),
         shape = RoundedCornerShape(16.dp),
         backgroundColor = Color(0xFF626262),
         elevation = 4.dp
@@ -153,16 +151,15 @@ fun ExerciseCard(
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Imagem no formato crop com bordas arredondadas
             Box(
                 modifier = Modifier
                     .size(60.dp)
-                    .clip(RoundedCornerShape(12.dp)) // Borda arredondada
+                    .clip(RoundedCornerShape(12.dp))
             ) {
                 Image(
                     painter = painterResource(id = exercise.image),
                     contentDescription = null,
-                    contentScale = ContentScale.Crop, // Crop da imagem
+                    contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize()
                 )
             }
@@ -190,7 +187,7 @@ fun ExerciseCard(
                         painter = if (isFavorite) painterResource(R.drawable.ic_favorite) else painterResource(R.drawable.ic_favorite_border),
                         contentDescription = "Favorite",
                         tint = if (isFavorite) Color.Red else Color(0xFFCFCFCF),
-                        modifier = Modifier.scale(scale) // Aplica a escala ao ícone
+                        modifier = Modifier.scale(scale)
                     )
                 }else {
                     Icon(

@@ -20,7 +20,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-/*import androidx.compose.ui.tooling.preview.Preview*/
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.pumpfit.R
@@ -31,10 +30,9 @@ import com.example.pumpfit.model.viewmodels.AuthViewModel
 @Composable
 fun ProfileScreen(userId: String, onBackClick: () -> Unit, authViewModel: AuthViewModel) {
     val user = mockUsers.find { it.id == userId }
-    // Estado para armazenar o nome do usuário
     var userName by remember { mutableStateOf<String?>(null) }
 
-    // Buscar o nome do usuário assim que a tela for aberta
+
     LaunchedEffect(Unit) {
         authViewModel.getUserName { name ->
             userName = name ?: "Usuário não encontrado"
@@ -66,7 +64,6 @@ fun ProfileScreen(userId: String, onBackClick: () -> Unit, authViewModel: AuthVi
                 .padding(horizontal = 16.dp, vertical = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Foto de perfil
             Box(
                 modifier = Modifier
                     .size(120.dp)
@@ -84,13 +81,11 @@ fun ProfileScreen(userId: String, onBackClick: () -> Unit, authViewModel: AuthVi
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Nome do usuário
             Row(
                 verticalAlignment = Alignment.CenterVertically
 
             ) {
                 Text(
-                    //text = user?.name ?: "Usuário Desconhecido",
                     text = userName ?: "Carregando...",
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
@@ -101,7 +96,6 @@ fun ProfileScreen(userId: String, onBackClick: () -> Unit, authViewModel: AuthVi
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Card de atributos
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
@@ -110,7 +104,7 @@ fun ProfileScreen(userId: String, onBackClick: () -> Unit, authViewModel: AuthVi
             ) {
                 Column(
                     modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp) // Espaçamento entre as linhas
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     ProfileAttribute(
                         icon = R.drawable.ic_weight,
@@ -163,10 +157,3 @@ fun ProfileAttribute(icon: Int, value: String, unit: String) {
         }
     }
 }
-
-/*@Preview(showBackground = true)
-@Composable
-fun PreviewProfileScreen() {
-    // Utilize um ID de usuário fictício para o preview
-    ProfileScreen(userId = "4", onBackClick = {})
-}*/
